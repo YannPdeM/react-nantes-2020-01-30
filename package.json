@@ -1,0 +1,27 @@
+{
+  "name": "react-nantes-2020-01-30",
+  "version": "0.0.1",
+  "description": "A small presentation about the <Suspense> situation in early 2020",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint --ext=\".js,.ts,.tsx\" src",
+    "type-coverage": "type-coverage --detail=true",
+    "coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.25",
+    "@types/node": "^13.1.2",
+    "@types/uuid": "^3.4.6",
+    "@typescript-eslint/eslint-plugin": "^2.15.0",
+    "@typescript-eslint/parser": "^2.15.0",
+    "eslint": "^6.8.0",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.2.0",
+    "type-coverage": "^2.4.0",
+    "typescript": "^3.7.4"
+  }
+}
