@@ -1,6 +1,7 @@
-import { CommandResponse, createCommand } from '../../../lib/DDD_ES/DDD_ES';
+import { CommandResponse, createCommand } from '../../../../lib/DDD_ES/DDD_ES';
 
-import TimingCommandBusMiddleware from './TimingCommandBusMiddleware';
+import timingCommandBusMiddleware from './timingCommandBusMiddleware';
+import { right } from 'fp-ts/lib/Either';
 
 describe('A TimingCommandBusMiddleware', () => {
 	let aCbmHasBeenCalled = false;
@@ -8,16 +9,14 @@ describe('A TimingCommandBusMiddleware', () => {
 	let lastLog: string = null;
 
 	const aCommand = createCommand({ name: 'SOME_COMMAND_NAME' });
-	const aCbm = {
-		dispatch: (): CommandResponse => {
-			aCbmHasBeenCalled = true;
+	const aCbm = (next) => (command) => {
+		aCbmHasBeenCalled = true;
 
-			return {
-				aggregateId: '',
-				version: 0,
-				events: [],
-			};
-		},
+		return right({
+			aggregateId: '',
+			version: 0,
+			events: [],
+		});
 	};
 	const aLogger = {
 		log: (message): void => {
@@ -25,7 +24,7 @@ describe('A TimingCommandBusMiddleware', () => {
 			aLoggerLogHasBeenCalled = true;
 		},
 	};
-	const aTcbm = new TimingCommandBusMiddleware(aCbm, aLogger);
+	const aTcbm = timingCommandBusMiddleware(aLogger)(aCbm(null));
 
 	beforeEach(() => {
 		aCbmHasBeenCalled = false;
@@ -33,12 +32,12 @@ describe('A TimingCommandBusMiddleware', () => {
 	});
 
 	it('calls it’s passed CommandBusMiddleware', () => {
-		aTcbm.dispatch(aCommand);
+		aTcbm(aCommand);
 		expect(aCbmHasBeenCalled).toBe(true);
 	});
 
 	it('logs the time taken for a Command to be executed', () => {
-		aTcbm.dispatch(aCommand);
+		aTcbm(aCommand);
 		expect(aLoggerLogHasBeenCalled).toBe(true);
 		const commandName = lastLog.replace(
 			/(^Command )(.+)( took [0-9]+ ms$)/,

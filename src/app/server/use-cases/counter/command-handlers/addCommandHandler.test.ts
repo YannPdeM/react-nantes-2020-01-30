@@ -1,14 +1,19 @@
 import { AddCommand } from '../../../../common/domain/counter/commands/AddCommand';
 
-import AddCommandHandler from './AddCommandHandler';
+import addCommandHandler from './addCommandHandler';
 import InMemoryEventStore from '../../../../../lib/infrastructure/InMemoryEventStore';
-import { createCommand } from '../../../../../lib/DDD_ES/DDD_ES';
+import {
+	CommandResponse,
+	createCommand,
+	HappyCommandResponse,
+} from '../../../../../lib/DDD_ES/DDD_ES';
+import { Right } from 'fp-ts/lib/Either';
 
 describe('An AddCommandHandler', () => {
 	const AN_AGGREGATE_ID = 'AN_AGGREGATE_ID';
 	const SOME_NUMBER = 123;
 
-	const ach = new AddCommandHandler(new InMemoryEventStore());
+	const ach = addCommandHandler(new InMemoryEventStore());
 	const ac = createCommand({
 		name: 'COUNTER_ADD',
 		payload: {
@@ -23,7 +28,9 @@ describe('An AddCommandHandler', () => {
 
 	it('…', () => {
 		const beforeHandlingCommand = Date.now();
-		const { aggregateId, version, events } = ach.handle(ac);
+		const {
+			right: { aggregateId, version, events },
+		} = ach(ac) as Right<HappyCommandResponse>;
 		const afterHandlingCommand = Date.now();
 
 		expect(aggregateId).toBe(AN_AGGREGATE_ID);

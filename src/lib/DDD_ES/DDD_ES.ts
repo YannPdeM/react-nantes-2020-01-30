@@ -1,3 +1,4 @@
+import { Either, Left, Right } from 'fp-ts/lib/Either';
 import { v4 as uuid } from 'uuid';
 
 export type id = string;
@@ -84,14 +85,15 @@ export const createCommand = ({
 			  },
 });
 
-export interface CommandResponse {
+export interface HappyCommandResponse {
 	readonly aggregateId: id;
 	readonly version: version;
 	readonly events: ReadonlyArray<Event>;
 }
+export type CommandResponse = Either<Error, HappyCommandResponse>;
 
 export interface CommandBusMiddleware {
-	dispatch: (command: Command) => CommandResponse;
+	(command: Command): CommandResponse;
 }
 
 /*
@@ -105,8 +107,11 @@ export interface CommandBusMiddleware {
  * But here it will have to find the state from a repository
  */
 export interface CommandHandler {
-	handle: (command: Command) => CommandResponse;
+	(command: Command): CommandResponse;
 	listenTo: () => commandName;
+}
+export interface CommandHandlerFactory {
+	(next: CommandHandler): CommandHandler;
 }
 
 export interface Entity {

@@ -1,24 +1,20 @@
-☐ migrer les CommandHandlers vers des fonctions `(dependancies) => (next) => (command) => doSomething() && next(command)`
-
-☐ retours : Maybe (Types fonctionnels pour les erreurs)
+☐ mocks de Jest
 
 ☐ async
 
 ☐ faire le `CommandHandler` qui va injecter dans l’`EventBus` 
 
+☐ Simplifier un peu la chaîne côté commandHandler/Objet métier/Repository
+
 ☐ Événement -> projection (`EventHandler`, `EventBusMiddleware`, …)
 
 ☐ `Query` & `QueryHandler`
 
-☐ mocks de Jest
-
-☐ Simplifier un peu la chaîne côté commandHandler/Objet métier/Repository
-
 ☐ Séparer un peu ce qui est DDD, ES, …
 
-☐ HTTP Post
+☐ HTTP Post (Fastify : https://github.com/fastify/fastify/blob/master/docs/Getting-Started.md )
 
-☐ GraphQL
+☐ GraphQL (serveur : https://github.com/zalando-incubator/graphql-jit, client : https://github.com/FormidableLabs/urql/blob/master/README.md )
 
 ☐ Postgres pour la sauvegarde des événements
 
