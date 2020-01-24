@@ -4,8 +4,8 @@ import {
 	commandName,
 	CommandResponse,
 	id,
-} from '../../../../lib/DDD_ES';
-import CounterRepository from '../Repository/CounterRepository';
+} from '../../../../../lib/DDD_ES';
+import CounterRepository from '../repository/CounterRepository';
 
 export interface AddCommand extends Command {
 	name: 'COUNTER_ADD';

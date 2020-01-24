@@ -7,9 +7,9 @@ import {
 	createCommand,
 } from './DDD_ES';
 
-import TimingCommandBusMiddleware from '../app/middlewares/TimingCommandBusMiddleware';
-import LoggerCommandBusMiddleware from '../app/middlewares/LoggerCommandBusMiddleware';
-import DummyCommandBusMiddleware from '../app/middlewares/DummyCommandBusMiddleware';
+import TimingCommandBusMiddleware from '../app/server/middlewares/TimingCommandBusMiddleware';
+import LoggerCommandBusMiddleware from '../app/server/middlewares/LoggerCommandBusMiddleware';
+import DummyCommandBusMiddleware from '../app/server/middlewares/DummyCommandBusMiddleware';
 import CommandBusDispatcher from './CommandBusDispatcher';
 import CommandBus from './CommandBus';
 

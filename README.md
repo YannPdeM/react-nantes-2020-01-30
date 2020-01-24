@@ -20,9 +20,9 @@
 
 ☐ GraphQL
 
-☐ Redis pour la mise en cache des ViewModels
-
 ☐ Postgres pour la sauvegarde des événements
+
+☐ Redis pour la mise en cache des ViewModels
 
 ☐ ¿ Model View Presenter pour la remontée ?
 

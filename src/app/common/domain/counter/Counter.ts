@@ -1,8 +1,8 @@
-import { Entity, id, Logger, version } from '../../../lib/DDD_ES';
-import { CounterEvent, createCounterEvent } from './Events/CounterEvents';
+import { Entity, id, Logger, version } from '../../../../lib/DDD_ES';
+import { CounterEvent, createCounterEvent } from './events/CounterEvents';
 
 import { v4 as uuid } from 'uuid';
-import { AddCommand } from './Commands/AddCommand';
+import { AddCommand } from '../../../server/use-cases/counter/commands/AddCommand';
 
 export default class Counter implements Entity {
 	id: id;

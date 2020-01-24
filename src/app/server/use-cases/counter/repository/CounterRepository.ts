@@ -1,6 +1,6 @@
-import { Repository, id, EventStore, version } from '../../../../lib/DDD_ES';
-import Counter from '../Counter';
-import { CounterEvent } from '../Events/CounterEvents';
+import { Repository, id, EventStore, version } from '../../../../../lib/DDD_ES';
+import Counter from '../../../../common/domain/counter/Counter';
+import { CounterEvent } from '../../../../common/domain/counter/events/CounterEvents';
 
 interface SaveEventReturn {
 	lastVersion: version;

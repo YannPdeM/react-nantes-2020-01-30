@@ -1,5 +1,5 @@
-import InMemoryEventStore from '../../../../lib/InMemoryEventStore';
-import { createCounterEvent } from '../Events/CounterEvents';
+import InMemoryEventStore from '../../../../../lib/InMemoryEventStore';
+import { createCounterEvent } from '../../../../common/domain/counter/events/CounterEvents';
 import CounterRepository from './CounterRepository';
 
 import { v4 as uuid } from 'uuid';

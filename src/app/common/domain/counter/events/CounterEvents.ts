@@ -1,4 +1,4 @@
-import { Event, id, version, timestamp } from '../../../../lib/DDD_ES';
+import { Event, id, version, timestamp } from '../../../../../lib/DDD_ES';
 import { v4 as uuid } from 'uuid';
 
 type CounterEventsNames = 'ADDED' | 'SUBTRACTED' | 'MULTIPLIED' | 'DIVIDED';

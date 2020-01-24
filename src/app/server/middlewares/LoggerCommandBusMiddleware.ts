@@ -2,7 +2,7 @@ import {
 	CommandBusMiddleware,
 	CommandResponse,
 	Logger,
-} from '../../lib/DDD_ES';
+} from '../../../lib/DDD_ES';
 
 export default class LoggerCommandBusMiddleware
 	implements CommandBusMiddleware {

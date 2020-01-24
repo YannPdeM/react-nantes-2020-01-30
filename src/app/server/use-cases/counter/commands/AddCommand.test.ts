@@ -1,6 +1,6 @@
 import AddCommandHandler, { AddCommand } from './AddCommand';
-import InMemoryEventStore from '../../../../lib/InMemoryEventStore';
-import { createCommand } from '../../../../lib/DDD_ES';
+import InMemoryEventStore from '../../../../../lib/InMemoryEventStore';
+import { createCommand } from '../../../../../lib/DDD_ES';
 
 describe('An AddCommandHandler', () => {
 	const AN_AGGREGATE_ID = 'AN_AGGREGATE_ID';
