@@ -1,6 +1,7 @@
+import { createEvent, Logger } from '../../../../lib/DDD_ES';
+
 import Counter from './Counter';
 import { CounterEvent, createCounterEvent } from './events/CounterEvents';
-import { createEvent, Logger } from '../../../../lib/DDD_ES';
 
 describe('a Counter', () => {
 	it('can add', () => {

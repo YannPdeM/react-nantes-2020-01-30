@@ -5,15 +5,9 @@ import {
 	CommandResponse,
 	id,
 } from '../../../../../lib/DDD_ES';
-import CounterRepository from '../repository/CounterRepository';
 
-export interface AddCommand extends Command {
-	name: 'COUNTER_ADD';
-	payload: {
-		aggregateId: id;
-		howMuch: number;
-	};
-}
+import CounterRepository from '../repository/CounterRepository';
+import { AddCommand } from '../../../../common/domain/counter/commands/AddCommand';
 
 export default class AddCommandHandler implements CommandHandler {
 	repo: CounterRepository;

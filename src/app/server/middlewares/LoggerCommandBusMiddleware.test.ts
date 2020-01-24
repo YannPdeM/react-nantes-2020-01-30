@@ -1,4 +1,5 @@
 import { Command, CommandResponse, createCommand } from '../../../lib/DDD_ES';
+
 import LoggerCommandBusMiddleware from './LoggerCommandBusMiddleware';
 
 describe('A LoggerCommandBusMiddleware', () => {

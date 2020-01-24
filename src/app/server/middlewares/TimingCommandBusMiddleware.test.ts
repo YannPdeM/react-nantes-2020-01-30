@@ -1,4 +1,5 @@
 import { CommandResponse, createCommand } from '../../../lib/DDD_ES';
+
 import TimingCommandBusMiddleware from './TimingCommandBusMiddleware';
 
 describe('A TimingCommandBusMiddleware', () => {

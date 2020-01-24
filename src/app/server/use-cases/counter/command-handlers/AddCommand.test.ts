@@ -1,4 +1,6 @@
-import AddCommandHandler, { AddCommand } from './AddCommand';
+import { AddCommand } from '../../../../common/domain/counter/commands/AddCommand';
+
+import AddCommandHandler from './AddCommand';
 import InMemoryEventStore from '../../../../../lib/InMemoryEventStore';
 import { createCommand } from '../../../../../lib/DDD_ES';
 
