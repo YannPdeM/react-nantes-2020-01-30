@@ -1,4 +1,4 @@
-import { CommandResponse, createCommand } from '../../../lib/DDD_ES';
+import { CommandResponse, createCommand } from '../../../lib/DDD_ES/DDD_ES';
 
 import TimingCommandBusMiddleware from './TimingCommandBusMiddleware';
 

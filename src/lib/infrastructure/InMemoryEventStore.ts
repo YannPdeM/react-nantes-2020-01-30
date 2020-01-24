@@ -1,4 +1,4 @@
-import { Event, EventStore, version } from './DDD_ES';
+import { Event, EventStore, version } from '../DDD_ES/DDD_ES';
 
 export default class InMemoryEventStore implements EventStore {
 	streams: {};

@@ -11,7 +11,9 @@ export interface Event {
 	readonly aggregateId: id;
 	readonly version: version;
 	readonly timestamp: timestamp; // in theory optional
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	readonly payload?: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	readonly meta?: any;
 }
 export const createEvent = ({
@@ -28,7 +30,9 @@ export const createEvent = ({
 	aggregateId: id;
 	version: version;
 	timestamp?: timestamp;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	payload?: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	meta?: any;
 }): Event => ({
 	eventId,
@@ -52,6 +56,7 @@ export interface EventStore {
 export type commandName = string;
 export interface Command {
 	readonly name: commandName;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	readonly payload?: any;
 	readonly meta?: {
 		readonly timestamp: timestamp; // in theory optional
@@ -63,6 +68,7 @@ export const createCommand = ({
 	meta,
 }: {
 	name: commandName;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	payload?: any;
 	meta?: {
 		timestamp: timestamp; // in theory optional
@@ -75,7 +81,7 @@ export const createCommand = ({
 			? meta
 			: {
 					timestamp: Date.now(),
-			},
+			  },
 });
 
 export interface CommandResponse {
@@ -101,10 +107,6 @@ export interface CommandBusMiddleware {
 export interface CommandHandler {
 	handle: (command: Command) => CommandResponse;
 	listenTo: () => commandName;
-}
-
-export interface Logger {
-	log: (...args: any[]) => void;
 }
 
 export interface Entity {

@@ -7,13 +7,14 @@
   "author": "Yann Picard de Muller <yann.picarddemuller@free.fr>",
   "scripts": {
     "test": "jest",
+    "prettier": "prettier --write  src/**/*.ts",
     "lint": "eslint --ext=\".js,.ts,.tsx\" src",
     "type-coverage": "type-coverage --detail=true",
     "coverage": "jest --coverage"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint && yarn test",
+      "pre-commit": "yarn prettier && yarn lint && yarn test",
       "pre-push": "yarn test",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
@@ -36,6 +37,7 @@
     "eslint": "^6.8.0",
     "husky": "^4.2.1",
     "jest": "^24.9.0",
+    "prettier": "^1.19.1",
     "ts-jest": "^24.2.0",
     "type-coverage": "^2.4.0",
     "typescript": "^3.7.4"

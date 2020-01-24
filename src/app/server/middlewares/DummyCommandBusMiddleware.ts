@@ -1,4 +1,7 @@
-import { CommandBusMiddleware, CommandResponse } from '../../../lib/DDD_ES';
+import {
+	CommandBusMiddleware,
+	CommandResponse,
+} from '../../../lib/DDD_ES/DDD_ES';
 
 export default class DummyCommandBusMiddleware implements CommandBusMiddleware {
 	next: CommandBusMiddleware;

@@ -9,4 +9,7 @@ module.exports = {
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
   ],
+  rules: {
+    'no-mixed-spaces-and-tabs': ['error', 'smart-tabs'],
+  }
 };

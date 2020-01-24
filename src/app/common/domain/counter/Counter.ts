@@ -1,4 +1,5 @@
-import { Entity, id, Logger, version } from '../../../../lib/DDD_ES';
+import { Entity, id, version } from '../../../../lib/DDD_ES/DDD_ES';
+import { Logger } from '../../../../lib/utils/Logger';
 
 import { CounterEvent, createCounterEvent } from './events/CounterEvents';
 import { AddCommand } from './commands/AddCommand';

@@ -1,4 +1,9 @@
-import { Event, id, version, timestamp } from '../../../../../lib/DDD_ES';
+import {
+	Event,
+	id,
+	version as DDDVersion,
+	timestamp as DDDTimestamp,
+} from '../../../../../lib/DDD_ES/DDD_ES';
 
 import { v4 as uuid } from 'uuid';
 
@@ -27,9 +32,10 @@ export const createCounterEvent = ({
 	eventId?: id;
 	name: CounterEventsNames;
 	aggregateId: id;
-	version: version;
-	timestamp?: timestamp;
+	version: DDDVersion;
+	timestamp?: DDDTimestamp;
 	payload: number;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	meta?: any;
 }): CounterEvent => ({
 	eventId,

@@ -1,6 +1,6 @@
 import { createCounterEvent } from '../../../../common/domain/counter/events/CounterEvents';
 
-import InMemoryEventStore from '../../../../../lib/InMemoryEventStore';
+import InMemoryEventStore from '../../../../../lib/infrastructure/InMemoryEventStore';
 import CounterRepository from './CounterRepository';
 
 import { v4 as uuid } from 'uuid';

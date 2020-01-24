@@ -1,4 +1,8 @@
-import { Command, CommandResponse, createCommand } from '../../../lib/DDD_ES';
+import {
+	Command,
+	CommandResponse,
+	createCommand,
+} from '../../../lib/DDD_ES/DDD_ES';
 
 import LoggerCommandBusMiddleware from './LoggerCommandBusMiddleware';
 

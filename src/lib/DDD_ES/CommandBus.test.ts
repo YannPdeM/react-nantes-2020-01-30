@@ -2,20 +2,20 @@ import {
 	CommandHandler,
 	Event,
 	id,
-	version,
-	Command,
+	version as DDDVersion,
+	Command as DDDCommand,
 	createCommand,
 } from './DDD_ES';
 
-import TimingCommandBusMiddleware from '../app/server/middlewares/TimingCommandBusMiddleware';
-import LoggerCommandBusMiddleware from '../app/server/middlewares/LoggerCommandBusMiddleware';
-import DummyCommandBusMiddleware from '../app/server/middlewares/DummyCommandBusMiddleware';
+import TimingCommandBusMiddleware from '../../app/server/middlewares/TimingCommandBusMiddleware';
+import LoggerCommandBusMiddleware from '../../app/server/middlewares/LoggerCommandBusMiddleware';
+import DummyCommandBusMiddleware from '../../app/server/middlewares/DummyCommandBusMiddleware';
 import CommandBusDispatcher from './CommandBusDispatcher';
 import CommandBus from './CommandBus';
 
 const addedEvent = (
 	aggregateId: id,
-	version: version,
+	version: DDDVersion,
 	quantity: number
 ): Event => ({
 	eventId: 'SOME_EVENT_ID',
@@ -33,6 +33,7 @@ describe('a command bus', () => {
 	const event = addedEvent(aggregateId, 0, 1);
 	let handleHasBeenCalled = false;
 	const dummyCommandHandler: CommandHandler = {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		handle(command) {
 			handleHasBeenCalled = true;
 			return {
@@ -46,7 +47,7 @@ describe('a command bus', () => {
 		},
 	};
 
-	const command: Command = createCommand({
+	const command: DDDCommand = createCommand({
 		name: 'ADD_ONE',
 	});
 

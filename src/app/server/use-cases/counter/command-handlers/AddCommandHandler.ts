@@ -1,10 +1,8 @@
 import {
-	Command,
 	CommandHandler,
 	commandName,
 	CommandResponse,
-	id,
-} from '../../../../../lib/DDD_ES';
+} from '../../../../../lib/DDD_ES/DDD_ES';
 
 import CounterRepository from '../repository/CounterRepository';
 import { AddCommand } from '../../../../common/domain/counter/commands/AddCommand';

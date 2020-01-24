@@ -1,4 +1,5 @@
-import { createEvent, Logger } from '../../../../lib/DDD_ES';
+import { createEvent } from '../../../../lib/DDD_ES/DDD_ES';
+import { Logger } from '../../../../lib/utils/Logger';
 
 import Counter from './Counter';
 import { CounterEvent, createCounterEvent } from './events/CounterEvents';
