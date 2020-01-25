@@ -3,7 +3,6 @@ import { AddCommand } from '../../../../common/domain/counter/commands/AddComman
 import addCommandHandler from './addCommandHandler';
 import InMemoryEventStore from '../../../../../lib/infrastructure/InMemoryEventStore';
 import {
-	CommandResponse,
 	createCommand,
 	HappyCommandResponse,
 } from '../../../../../lib/DDD_ES/DDD_ES';

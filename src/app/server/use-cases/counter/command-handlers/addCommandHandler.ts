@@ -10,7 +10,7 @@ import { AddCommand } from '../../../../common/domain/counter/commands/AddComman
 
 import { right } from 'fp-ts/lib/Either';
 
-export default (store: EventStore) =>
+export default (store: EventStore): CommandHandler =>
 	Object.assign(
 		(addCommand: AddCommand): CommandResponse => {
 			const repo = new CounterRepository(store);

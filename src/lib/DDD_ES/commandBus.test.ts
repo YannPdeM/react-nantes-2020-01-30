@@ -16,13 +16,13 @@ import commandBusDispatcher from './commandBusDispatcher';
 import commandBus from './commandBus';
 import { right } from 'fp-ts/lib/Either';
 
-const addedEvent = (
+const createSomeEvent = (
 	aggregateId: id,
 	version: DDDVersion,
 	quantity: number
 ): Event => ({
 	eventId: 'SOME_EVENT_ID',
-	name: 'ADDED',
+	name: 'A_COMMAND_NAME',
 	aggregateId: aggregateId,
 	version: version,
 	timestamp: Date.now(),
@@ -33,34 +33,35 @@ const addedEvent = (
 
 describe('a command bus', () => {
 	const aggregateId = 'fake_aggregate_id';
-	const event = addedEvent(aggregateId, 0, 1);
-	let handleHasBeenCalled = false;
-	const dummyCommandHandler: CommandHandler = Object.assign(
-		(command: Command): CommandResponse => {
-			handleHasBeenCalled = true;
-			return right({
+	const event = createSomeEvent(aggregateId, 0, 1);
+
+	const t = jest.fn(
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		(command: Command): CommandResponse =>
+			right({
 				aggregateId: aggregateId,
 				version: event.version,
 				events: [event],
-			});
-		},
-		{
-			listenTo() {
-				return 'ADD_ONE';
-			},
-		}
+			})
 	);
 
-	const command: DDDCommand = createCommand({
-		name: 'ADD_ONE',
+	const dummyCommandHandler: CommandHandler = Object.assign(t, {
+		listenTo() {
+			return 'A_COMMAND_NAME';
+		},
 	});
 
-	const logger = {
+	const command: DDDCommand = createCommand({
+		name: 'A_COMMAND_NAME',
+	});
+
+	const silentLogger = {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		log: (message): void => undefined,
 	};
 
-	const chain = timingCommandBusMiddleware(logger)(
-		loggerCommandBusMiddleware(logger)(
+	const chain = timingCommandBusMiddleware(silentLogger)(
+		loggerCommandBusMiddleware(silentLogger)(
 			dummyCommandBusMiddleware(commandBusDispatcher([dummyCommandHandler]))
 		)
 	);
@@ -69,7 +70,7 @@ describe('a command bus', () => {
 
 	it('goes through it’s middlewares', () => {
 		const result = cb(command);
-		expect(handleHasBeenCalled).toBe(true);
+		expect(t.mock.calls.length).toBe(1);
 		expect(result).toEqual(
 			right({
 				aggregateId,

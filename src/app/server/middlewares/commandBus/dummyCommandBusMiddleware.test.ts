@@ -1,5 +1,6 @@
 import {
 	Command,
+	CommandBusMiddleware,
 	CommandResponse,
 	createCommand,
 } from '../../../../lib/DDD_ES/DDD_ES';
@@ -10,23 +11,24 @@ import { right } from 'fp-ts/lib/Either';
 
 describe('A LoggerCommandBusMiddleware', () => {
 	it('calls it’s passed CommandBusMiddleware', () => {
-		let aCbmHasBeenCalled = false;
+		const aCommand: Command = createCommand({ name: 'SOME_COMMAND_NAME' });
 
-		const aCommand = createCommand({ name: 'SOME_COMMAND_NAME' });
+		const aCommandBusMiddleware = jest.fn(
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			(command: Command): CommandResponse =>
+				right({
+					aggregateId: '',
+					version: 0,
+					events: [],
+				})
+		) as jest.MockedFunction<CommandBusMiddleware>;
 
-		const aCbm = (next) => (command) => {
-			aCbmHasBeenCalled = true;
+		const aDummyCommandBusMiddleware = dummyCommandBusMiddleware(
+			aCommandBusMiddleware
+		);
+		aDummyCommandBusMiddleware(aCommand);
 
-			return right({
-				aggregateId: '',
-				version: 0,
-				events: [],
-			});
-		};
-
-		const aDcbm = dummyCommandBusMiddleware(aCbm(null));
-		aDcbm(aCommand);
-
-		expect(aCbmHasBeenCalled).toBe(true);
+		expect(aCommandBusMiddleware.mock.calls.length).toBe(1);
+		expect(aCommandBusMiddleware.mock.calls[0][0]).toBe(aCommand);
 	});
 });

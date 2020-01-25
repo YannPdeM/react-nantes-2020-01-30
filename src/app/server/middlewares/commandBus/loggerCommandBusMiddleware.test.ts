@@ -1,5 +1,6 @@
 import {
 	Command,
+	CommandBusMiddleware,
 	CommandResponse,
 	createCommand,
 } from '../../../../lib/DDD_ES/DDD_ES';
@@ -8,45 +9,41 @@ import LoggerCommandBusMiddleware from './loggerCommandBusMiddleware';
 import { right } from 'fp-ts/lib/Either';
 
 describe('A LoggerCommandBusMiddleware', () => {
-	let aCbmHasBeenCalled = false;
-	let aLoggerLogHasBeenCalled = false;
-	let lastLog: {
-		when: string;
-		command: Command;
-	} = null;
+	const aCommand: Command = createCommand({ name: 'SOME_COMMAND_NAME' });
 
-	const aCommand = createCommand({ name: 'SOME_COMMAND_NAME' });
-	const aCbm = (next) => (command) => {
-		aCbmHasBeenCalled = true;
+	const aCommandBusMiddleware = jest.fn(
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		(command: Command): CommandResponse =>
+			right({
+				aggregateId: '',
+				version: 0,
+				events: [],
+			})
+	) as jest.MockedFunction<CommandBusMiddleware>;
 
-		return right({
-			aggregateId: '',
-			version: 0,
-			events: [],
-		});
-	};
 	const aLogger = {
-		log: (message): void => {
-			lastLog = message;
-			aLoggerLogHasBeenCalled = true;
-		},
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		log: jest.fn((message): void => undefined),
 	};
-	const aLcbm = LoggerCommandBusMiddleware(aLogger)(aCbm(null));
+
+	const aLoggerCommandBusMiddleware = LoggerCommandBusMiddleware(aLogger)(
+		aCommandBusMiddleware
+	);
 
 	beforeEach(() => {
-		aCbmHasBeenCalled = false;
-		aLoggerLogHasBeenCalled = false;
+		aCommandBusMiddleware.mockClear();
+		aLogger.log.mockClear();
 	});
 
 	it('calls it’s passed CommandBusMiddleware', () => {
-		aLcbm(aCommand);
-		expect(aCbmHasBeenCalled).toBe(true);
+		aLoggerCommandBusMiddleware(aCommand);
+		expect(aCommandBusMiddleware.mock.calls.length).toBe(1);
 	});
 
 	it('logs the Command going through', () => {
-		aLcbm(aCommand);
-		expect(aLoggerLogHasBeenCalled).toBe(true);
-		expect(lastLog).toMatchObject(
+		aLoggerCommandBusMiddleware(aCommand);
+		expect(aLogger.log.mock.calls.length).toBe(1);
+		expect(aLogger.log.mock.calls[0][0]).toMatchObject(
 			expect.objectContaining({
 				when: expect.any(Number),
 				command: expect.objectContaining({

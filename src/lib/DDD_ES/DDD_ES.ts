@@ -1,4 +1,4 @@
-import { Either, Left, Right } from 'fp-ts/lib/Either';
+import { Either } from 'fp-ts/lib/Either';
 import { v4 as uuid } from 'uuid';
 
 export type id = string;
