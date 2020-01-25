@@ -4,6 +4,6 @@ import {
 	CommandResponse,
 } from '../../../../lib/DDD_ES/DDD_ES';
 
-export default (next: CommandBusMiddleware) => (
+export default (next: CommandBusMiddleware): CommandBusMiddleware => async (
 	command: Command
-): CommandResponse => next(command);
+): Promise<CommandResponse> => await next(command);

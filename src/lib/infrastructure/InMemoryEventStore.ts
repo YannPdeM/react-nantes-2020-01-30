@@ -7,7 +7,7 @@ export default class InMemoryEventStore implements EventStore {
 		this.streams = {};
 	}
 
-	getEvents(aggregateId, version = 0): ReadonlyArray<Event> {
+	async getEvents(aggregateId, version = 0): Promise<ReadonlyArray<Event>> {
 		if (this.streams[aggregateId]) {
 			const events = this.streams[aggregateId].filter(
 				(event) => event.version >= version
@@ -37,7 +37,7 @@ export default class InMemoryEventStore implements EventStore {
 		}
 	}
 
-	add(aggregateId, expectedSaveVersion, events): void {
+	async add(aggregateId, expectedSaveVersion, events): Promise<void> {
 		const stream = this.getStream(aggregateId);
 		const lastVersion = this.getLastVersion(stream);
 
@@ -49,5 +49,7 @@ export default class InMemoryEventStore implements EventStore {
 		events.forEach((event) => {
 			stream.unshift(event);
 		});
+
+		return;
 	}
 }

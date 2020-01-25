@@ -23,25 +23,25 @@ describe('a CounterRepository', () => {
 		aggregateId: counterId,
 	});
 
-	it('get us a counter up-to-date', () => {
+	it('get us a counter up-to-date', async () => {
 		const store = new InMemoryEventStore();
 		const repo = new CounterRepository(store);
 
-		store.add(counterId, firstEventEver.version, [
+		await store.add(counterId, firstEventEver.version, [
 			firstEventEver,
 			secondEvent,
 		]);
 
-		const realCounter = repo.getById(counterId);
+		const realCounter = await repo.getById(counterId);
 
 		expect(realCounter.value).toBe(123);
 	});
 
-	it('saves events and return us a {lastVersion, lastState} object', () => {
+	it('saves events and return us a {lastVersion, lastState} object', async () => {
 		const store = new InMemoryEventStore();
 		const repo = new CounterRepository(store);
 
-		const newCounter = repo.getById(counterId);
+		const newCounter = await repo.getById(counterId);
 		expect(newCounter).toMatchObject({
 			id: counterId,
 			lastVersion: -1, // no event yet
@@ -52,7 +52,7 @@ describe('a CounterRepository', () => {
 		const {
 			lastVersion,
 			lastState: { id, lastVersion: counterLastVersion, value },
-		} = repo.saveEvents([firstEventEver, secondEvent]);
+		} = await repo.saveEvents([firstEventEver, secondEvent]);
 		expect(lastVersion).toBe(1);
 		expect(id).toBe(counterId);
 		expect(counterLastVersion).toBe(lastVersion);

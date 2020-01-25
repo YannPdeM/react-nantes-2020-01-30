@@ -46,12 +46,31 @@ export const createEvent = ({
 });
 
 export interface EventStore {
-	getEvents: (aggregateId: id, version?: version) => ReadonlyArray<Event>;
+	getEvents: (
+		aggregateId: id,
+		version?: version
+	) => Promise<ReadonlyArray<Event>>;
 	add: (
 		aggregateId: id,
 		expectedSaveVersion: version,
 		events: ReadonlyArray<Event>
-	) => void;
+	) => Promise<void>;
+}
+
+export interface Entity {
+	id: id;
+	lastVersion: version;
+	applyEvents: (events: ReadonlyArray<Event>) => Promise<void>;
+}
+
+export interface Repository<Entity, Event> {
+	getById: (aggregateId: id) => Promise<Entity>;
+	saveEvents: (
+		events: ReadonlyArray<Event>
+	) => Promise<{
+		lastVersion: version;
+		lastState: Entity;
+	}>;
 }
 
 export type commandName = string;
@@ -93,7 +112,10 @@ export interface HappyCommandResponse {
 export type CommandResponse = Either<Error, HappyCommandResponse>;
 
 export interface CommandBusMiddleware {
-	(command: Command): CommandResponse;
+	(command: Command): Promise<CommandResponse>;
+}
+export interface CommandBusMiddlewareFactory {
+	(next: CommandBusMiddleware): CommandBusMiddleware;
 }
 
 /*
@@ -107,25 +129,6 @@ export interface CommandBusMiddleware {
  * But here it will have to find the state from a repository
  */
 export interface CommandHandler {
-	(command: Command): CommandResponse;
+	(command: Command): Promise<CommandResponse>;
 	listenTo: () => commandName;
-}
-export interface CommandHandlerFactory {
-	(next: CommandHandler): CommandHandler;
-}
-
-export interface Entity {
-	id: id;
-	lastVersion: version;
-	applyEvents: (events: ReadonlyArray<Event>) => void;
-}
-
-export interface Repository<Entity, Event> {
-	getById: (aggregateId: id) => Entity;
-	saveEvents: (
-		events: ReadonlyArray<Event>
-	) => {
-		lastVersion: version;
-		lastState: Entity;
-	};
 }

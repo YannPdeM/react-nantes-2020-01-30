@@ -12,13 +12,13 @@ import { right } from 'fp-ts/lib/Either';
 
 export default (store: EventStore): CommandHandler =>
 	Object.assign(
-		(addCommand: AddCommand): CommandResponse => {
+		async (addCommand: AddCommand): Promise<CommandResponse> => {
 			const repo = new CounterRepository(store);
 			const { aggregateId } = addCommand.payload;
-			const counter = repo.getById(aggregateId);
+			const counter = await repo.getById(aggregateId);
 			const events = counter.add(addCommand);
 			counter.applyEvents(events);
-			repo.saveEvents(events);
+			await repo.saveEvents(events);
 			return right({
 				aggregateId: counter.id,
 				version: counter.lastVersion,

@@ -13,7 +13,7 @@ describe('A TimingCommandBusMiddleware', () => {
 
 	const aCommandBusMiddleware = jest.fn(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		(command: Command): CommandResponse =>
+		async (command: Command): Promise<CommandResponse> =>
 			right({
 				aggregateId: '',
 				version: 0,
@@ -35,16 +35,16 @@ describe('A TimingCommandBusMiddleware', () => {
 		aLogger.log.mockClear();
 	});
 
-	it('calls it’s passed CommandBusMiddleware', () => {
-		aTimingCommandBusMiddleware(aCommand);
+	it('calls it’s passed CommandBusMiddleware', async () => {
+		await aTimingCommandBusMiddleware(aCommand);
 		expect(aCommandBusMiddleware.mock.calls.length).toBe(1);
 	});
 
-	it('logs the time taken for a Command to be executed', () => {
+	it('logs the time taken for a Command to be executed', async () => {
 		const COMMAND_NAME_RE = /(^Command )(.+)( took [0-9]+ ms$)/;
 		const TIME_TAKEN_RE = /(^Command .+ took )([0-9]+)( ms$)/;
 
-		aTimingCommandBusMiddleware(aCommand);
+		await aTimingCommandBusMiddleware(aCommand);
 		expect(aLogger.log.mock.calls.length).toBe(1);
 
 		const lastLog = aLogger.log.mock.calls[0][0];

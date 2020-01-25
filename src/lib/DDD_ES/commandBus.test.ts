@@ -37,7 +37,7 @@ describe('a command bus', () => {
 
 	const t = jest.fn(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		(command: Command): CommandResponse =>
+		async (command: Command): Promise<CommandResponse> =>
 			right({
 				aggregateId: aggregateId,
 				version: event.version,
@@ -68,8 +68,8 @@ describe('a command bus', () => {
 
 	const cb = commandBus(chain);
 
-	it('goes through it’s middlewares', () => {
-		const result = cb(command);
+	it('goes through it’s middlewares', async () => {
+		const result = await cb(command);
 		expect(t.mock.calls.length).toBe(1);
 		expect(result).toEqual(
 			right({
@@ -80,10 +80,14 @@ describe('a command bus', () => {
 		);
 	});
 
-	it('throws when we call an unknown command', () => {
+	it('throws when we call an unknown command', async () => {
 		const failingCommand = createCommand({ name: 'FAILING_COMMAND ' });
-		expect(() => cb(failingCommand)).toThrow(
-			`Handler for command ${failingCommand.name} not found`
-		);
+		try {
+			await cb(failingCommand);
+		} catch (e) {
+			expect(e).toEqual(
+				new Error(`Handler for command ${failingCommand.name} not found`)
+			);
+		}
 	});
 });

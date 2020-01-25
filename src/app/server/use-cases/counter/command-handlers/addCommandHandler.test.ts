@@ -25,11 +25,11 @@ describe('An AddCommandHandler', () => {
 		expect(ach.listenTo()).toBe(ac.name);
 	});
 
-	it('…', () => {
+	it('…', async () => {
 		const beforeHandlingCommand = Date.now();
 		const {
 			right: { aggregateId, version, events },
-		} = ach(ac) as Right<HappyCommandResponse>;
+		} = (await ach(ac)) as Right<HappyCommandResponse>;
 		const afterHandlingCommand = Date.now();
 
 		expect(aggregateId).toBe(AN_AGGREGATE_ID);

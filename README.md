@@ -1,10 +1,10 @@
 Samedi :
 ☐ async
+
 ☐ Événement -> projection (`EventHandler`, `EventBusMiddleware`, …)
 ☐ faire le `CommandHandler` qui va injecter dans l’`EventBus` 
 ☐ `Query` & `QueryHandler` & `QueryBus`
 ☐ Simplifier un peu la chaîne côté commandHandler/Objet métier/Repository
-☐ lint
 ☐ Séparer un peu ce qui est DDD, ES, …
 
 Dimanche :

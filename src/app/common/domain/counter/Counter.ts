@@ -30,11 +30,12 @@ export default class Counter implements Entity {
 		this.logger = logger;
 	}
 
-	applyEvents(events: ReadonlyArray<CounterEvent>): void {
+	async applyEvents(events: ReadonlyArray<CounterEvent>): Promise<void> {
 		for (const { name, payload: value, version } of events) {
 			this.lastVersion = version;
 			this[Counter.eventNameToMethod[name]](value);
 		}
+		return;
 	}
 
 	added(value): void {

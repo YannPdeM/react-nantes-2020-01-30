@@ -20,8 +20,8 @@ export default class CounterRepository
 		this.store = eventStore;
 	}
 
-	getById(aggregateId: id): Counter {
-		const events = this.store.getEvents(aggregateId) as ReadonlyArray<
+	async getById(aggregateId: id): Promise<Counter> {
+		const events = (await this.store.getEvents(aggregateId)) as ReadonlyArray<
 			CounterEvent
 		>;
 		const counter = new Counter({
@@ -33,8 +33,8 @@ export default class CounterRepository
 		return counter;
 	}
 
-	saveEvents(events): SaveEventReturn {
-		const counter = this.getById(events[0].aggregateId);
+	async saveEvents(events): Promise<SaveEventReturn> {
+		const counter = await this.getById(events[0].aggregateId);
 		// TODO : to improve (performance wise primarily)
 		events.forEach((ev) => {
 			this.store.add(counter.id, ev.version, [ev]);
