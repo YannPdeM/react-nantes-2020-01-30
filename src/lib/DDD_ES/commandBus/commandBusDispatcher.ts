@@ -5,6 +5,9 @@ import {
 	DomainCommandResponse,
 } from '../DDD_ES';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface LibCommandBusDispatcher extends LibCommandBusMiddleware {}
+
 export default (
 	handlers: ReadonlyArray<LibCommandHandler>
 ): LibCommandBusMiddleware => {
