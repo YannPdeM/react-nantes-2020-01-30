@@ -10,7 +10,12 @@ import {
 	CounterEventsNames,
 	createCounterEvent,
 } from './events/CounterEvents';
-import { AddCommand } from './commands/AddCommand';
+import {
+	AddCommand,
+	DivideCommand,
+	MultiplyCommand,
+	SubtractCommand,
+} from './commands/CounterCommands';
 
 import { v4 as uuid } from 'uuid';
 
@@ -78,6 +83,48 @@ export default class Counter implements DomainEntity {
 		return [
 			createCounterEvent({
 				name: CounterEventsNames.Added,
+				aggregateId: this.id,
+				version: this.lastVersion + 1,
+				payload: howMuch,
+			}),
+		];
+	}
+
+	subtract({
+		payload: { howMuch },
+	}: SubtractCommand): ReadonlyArray<CounterEvent> {
+		return [
+			createCounterEvent({
+				name: CounterEventsNames.Subtracted,
+				aggregateId: this.id,
+				version: this.lastVersion + 1,
+				payload: howMuch,
+			}),
+		];
+	}
+
+	multiply({
+		payload: { howMuch },
+	}: MultiplyCommand): ReadonlyArray<CounterEvent> {
+		return [
+			createCounterEvent({
+				name: CounterEventsNames.Multiplied,
+				aggregateId: this.id,
+				version: this.lastVersion + 1,
+				payload: howMuch,
+			}),
+		];
+	}
+
+	divide({
+		payload: { howMuch },
+	}: DivideCommand): ReadonlyArray<CounterEvent> {
+		if (howMuch === 0) {
+			throw new Error('Cannot divide by 0');
+		}
+		return [
+			createCounterEvent({
+				name: CounterEventsNames.Divided,
 				aggregateId: this.id,
 				version: this.lastVersion + 1,
 				payload: howMuch,

@@ -1,8 +1,7 @@
 import newCrudeOnDiskStorageEventStore from './CrudeOnDiskStorageEventStore';
-import { createDomainEvent, DomainEvent, DomainId, DomainVersion } from '../../../DDD_ES/DDD_ES';
+import { DomainEvent, DomainId, DomainVersion } from '../../../DDD_ES/DDD_ES';
 
 import { promises as fsPromises } from 'fs';
-import InMemoryEventStore from './InMemoryEventStore';
 
 const SomethingHappenedEvent = (
 	aggregateId: DomainId,
@@ -34,12 +33,12 @@ describe('a CrudeOnDiskStorageEventStore', () => {
 
 	const fifthEvent = SomethingHappenedEvent(secondId, 1, 'second event');
 
-	const REINIT_FILE = async () => {
-		await fsPromises.writeFile(filePath, '[]');
+	const REINIT_FILE = (content = '[]') => async (): Promise<void> => {
+		await fsPromises.writeFile(filePath, content);
 	};
 
-	beforeEach(REINIT_FILE);
-	afterEach(REINIT_FILE);
+	beforeEach(REINIT_FILE());
+	afterEach(REINIT_FILE());
 
 	it('stores', async () => {
 		const eventStore = await newCrudeOnDiskStorageEventStore(filePath);
@@ -50,12 +49,9 @@ describe('a CrudeOnDiskStorageEventStore', () => {
 		await eventStore.add(firstId, 2, [fourthEvent]);
 		await eventStore.add(secondId, 1, [fifthEvent]);
 
-		const fileContent = await fsPromises.readFile(filePath);
-		const t1 = fileContent.toString();
-		const t2 = JSON.parse(t1);
-
-		console.log({ fileContent, t1, t2 });
-		expect(t2).toEqual(await eventStore.getAllEvents());
+		expect(
+			JSON.parse((await fsPromises.readFile(filePath)).toString())
+		).toEqual(await eventStore.getAllEvents());
 	});
 
 	it('restores', async () => {
@@ -70,5 +66,12 @@ describe('a CrudeOnDiskStorageEventStore', () => {
 
 		const eventStore = await newCrudeOnDiskStorageEventStore(filePath);
 		expect(await eventStore.getAllEvents()).toEqual(events);
+	});
+
+	it('doesn’t choke an empty (for example: new) file', async () => {
+		await REINIT_FILE('')();
+
+		const eventStore = await newCrudeOnDiskStorageEventStore(filePath);
+		expect(await eventStore.getAllEvents()).toEqual([]);
 	});
 });

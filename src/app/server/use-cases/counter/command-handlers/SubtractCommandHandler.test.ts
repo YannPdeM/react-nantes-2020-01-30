@@ -1,9 +1,9 @@
 import {
 	CounterCommandNames,
-	AddCommand,
+	SubtractCommand,
 } from '../../../../common/domain/counter/commands/CounterCommands';
 
-import addCommandHandler from './addCommandHandler';
+import SubtractCommandHandler from './SubtractCommandHandler';
 import InMemoryEventStore from '../../../../../lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
 import {
 	createDomainCommand,
@@ -12,29 +12,27 @@ import {
 import { Right } from 'fp-ts/lib/Either';
 import { CounterEventsNames } from '../../../../common/domain/counter/events/CounterEvents';
 
-describe('An AddCommandHandler', () => {
+describe('An SubtractCommandHandler', () => {
 	const AN_AGGREGATE_ID = 'AN_AGGREGATE_ID';
 	const SOME_NUMBER = 123;
 
-	const ach = addCommandHandler(new InMemoryEventStore());
-	const ac = createDomainCommand({
-		name: CounterCommandNames.Add,
+	const sch = SubtractCommandHandler(new InMemoryEventStore());
+	const sc = createDomainCommand({
+		name: CounterCommandNames.Subtract,
 		payload: {
 			aggregateId: AN_AGGREGATE_ID,
 			howMuch: SOME_NUMBER,
 		},
-	}) as AddCommand;
+	}) as SubtractCommand;
 
-	it('listens to the AddCommand', () => {
-		expect(ach.listenTo()).toBe(ac.name);
+	it('listens to the SubtractCommand', () => {
+		expect(sch.listenTo()).toBe(sc.name);
 	});
 
-	it('spawns `AddedEvent`s', async () => {
-		const beforeHandlingCommand = Date.now();
+	it('spawns `SubtractedEvent`s', async () => {
 		const {
 			right: { aggregateId, version, events },
-		} = (await ach(ac)) as Right<DomainSuccessfulCommandResponse>;
-		const afterHandlingCommand = Date.now();
+		} = (await sch(sc)) as Right<DomainSuccessfulCommandResponse>;
 
 		expect(aggregateId).toBe(AN_AGGREGATE_ID);
 		expect(version).toBe(0);
@@ -43,14 +41,10 @@ describe('An AddCommandHandler', () => {
 			eventId: expect.any(String),
 			aggregateId: AN_AGGREGATE_ID,
 			version: 0,
-			name: CounterEventsNames.Added,
+			name: CounterEventsNames.Subtracted,
 			payload: SOME_NUMBER,
 			timestamp: expect.any(Number),
 			meta: undefined,
 		});
-
-		const { timestamp: ts } = events[0];
-		expect(ts).toBeGreaterThanOrEqual(beforeHandlingCommand);
-		expect(ts).toBeLessThanOrEqual(afterHandlingCommand);
 	});
 });

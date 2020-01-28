@@ -3,7 +3,7 @@ import { DomainEvent } from '../../../DDD_ES/DDD_ES';
 
 import { promises as fsPromises } from 'fs';
 
-export class CrudeOnDiskStorageEventStore extends InMemoryEventStore {
+class CrudeOnDiskStorageEventStore extends InMemoryEventStore {
 	filePath: string;
 
 	constructor(filePath: string) {
@@ -17,21 +17,32 @@ Please NEVER use \`CrudeOnDiskStorageEventStore\` in production:
 		this.filePath = filePath;
 	}
 
-	async add(aggregateId: string, expectedSaveVersion: number, events: ReadonlyArray<DomainEvent>): Promise<void> {
+	async add(
+		aggregateId: string,
+		expectedSaveVersion: number,
+		events: ReadonlyArray<DomainEvent>
+	): Promise<void> {
 		await super.add(aggregateId, expectedSaveVersion, events);
-		await fsPromises.writeFile(this.filePath, JSON.stringify((await super.getAllEvents())));
+		await fsPromises.writeFile(
+			this.filePath,
+			JSON.stringify(await super.getAllEvents())
+		);
 	}
 
 	async restore(): Promise<void> {
 		const content = (await fsPromises.readFile(this.filePath)).toString();
-		console.log({content})
-		if(content !== '') {
+		if (content !== '') {
 			const events: ReadonlyArray<DomainEvent> = JSON.parse(content);
-			events.forEach((event) => super.add(event.aggregateId, event.version, [event]));
+			events.forEach((event) =>
+				super.add(event.aggregateId, event.version, [event])
+			);
 		}
 	}
 }
-export default async (filePath: string): Promise<CrudeOnDiskStorageEventStore> => {
+
+export default async (
+	filePath: string
+): Promise<CrudeOnDiskStorageEventStore> => {
 	const instance = new CrudeOnDiskStorageEventStore(filePath);
 	await instance.restore();
 	return instance;

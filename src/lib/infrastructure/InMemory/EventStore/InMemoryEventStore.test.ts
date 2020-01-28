@@ -120,4 +120,15 @@ describe('an event store', () => {
 			fifthEvent,
 		]);
 	});
+
+	it('does nothing on restore', async () => {
+		const id = 'eight_accumulator';
+		const eventStore = new InMemoryEventStore();
+		const event = SomethingHappenedEvent(id, 0, 'first event');
+		await eventStore.add(id, event.version, [event]);
+		const events = await eventStore.getEvents(id);
+		expect(events).toEqual([event]);
+		await eventStore.restore();
+		expect(await eventStore.getAllEvents()).toEqual([event]);
+	});
 });

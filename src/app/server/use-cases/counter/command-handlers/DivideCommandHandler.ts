@@ -6,7 +6,7 @@ import {
 
 import {
 	CounterCommandNames,
-	AddCommand,
+	DivideCommand,
 } from '../../../../common/domain/counter/commands/CounterCommands';
 import CounterCommandTemplate from './CounterCommandTemplate';
 import Counter from '../../../../common/domain/counter/Counter';
@@ -15,10 +15,12 @@ export default (store: LibEventStore): LibCommandHandler =>
 	Object.assign(
 		CounterCommandTemplate(
 			store
-		)((counter: Counter, addCommand: AddCommand) => counter.add(addCommand)),
+		)((counter: Counter, divideCommand: DivideCommand) =>
+			counter.divide(divideCommand)
+		),
 		{
 			listenTo(): DomainCommandName {
-				return CounterCommandNames.Add;
+				return CounterCommandNames.Divide;
 			},
 		}
 	);
