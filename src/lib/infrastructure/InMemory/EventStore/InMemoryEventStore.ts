@@ -89,6 +89,13 @@ export default class InMemoryEventStore implements LibEventStore {
 	}
 
 	async getAllEvents(): Promise<ReadonlyArray<DomainEvent>> {
+		console.log('getAllEvents');
+		console.log({...this});
+		console.log({'Array.isArray(this.events)': Array.isArray(this.events)});
 		return this.events;
+	}
+
+	async restore(): Promise<void> {
+		// no meaning for this class
 	}
 }
