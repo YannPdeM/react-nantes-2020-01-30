@@ -1,26 +1,26 @@
 import {
-	Repository,
-	id,
-	EventStore,
-	version,
+	DomainRepository,
+	DomainId,
+	LibEventStore,
+	DomainVersion,
 } from '../../../../../lib/DDD_ES/DDD_ES';
 
 import Counter from '../../../../common/domain/counter/Counter';
 import { CounterEvent } from '../../../../common/domain/counter/events/CounterEvents';
 
 interface SaveEventReturn {
-	lastVersion: version;
+	lastVersion: DomainVersion;
 	lastState: Counter;
 }
 export default class CounterRepository
-	implements Repository<Counter, CounterEvent> {
-	store: EventStore;
+	implements DomainRepository<Counter, CounterEvent> {
+	store: LibEventStore;
 
-	constructor(eventStore: EventStore) {
+	constructor(eventStore: LibEventStore) {
 		this.store = eventStore;
 	}
 
-	async getById(aggregateId: id): Promise<Counter> {
+	async getById(aggregateId: DomainId): Promise<Counter> {
 		const events = (await this.store.getEvents(aggregateId)) as ReadonlyArray<
 			CounterEvent
 		>;

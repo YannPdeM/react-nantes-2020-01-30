@@ -1,13 +1,21 @@
-import { Event, EventStore, version } from '../DDD_ES/DDD_ES';
+import {
+	DomainEvent,
+	LibEventStore,
+	DomainId,
+	DomainVersion,
+} from '../../../DDD_ES/DDD_ES';
 
-export default class InMemoryEventStore implements EventStore {
+export default class InMemoryEventStore implements LibEventStore {
 	streams: {};
 
 	constructor() {
 		this.streams = {};
 	}
 
-	async getEvents(aggregateId, version = 0): Promise<ReadonlyArray<Event>> {
+	async getEvents(
+		aggregateId: DomainId,
+		version: DomainVersion = 0
+	): Promise<ReadonlyArray<DomainEvent>> {
 		if (this.streams[aggregateId]) {
 			const events = this.streams[aggregateId].filter(
 				(event) => event.version >= version
@@ -18,7 +26,7 @@ export default class InMemoryEventStore implements EventStore {
 		return [];
 	}
 
-	getStream(aggregateId): Array<Event> {
+	getStream(aggregateId: DomainId): Array<DomainEvent> {
 		let stream = this.streams[aggregateId];
 		if (stream === undefined) {
 			this.streams[aggregateId] = [];
@@ -27,17 +35,29 @@ export default class InMemoryEventStore implements EventStore {
 		return stream;
 	}
 
-	getLastVersion(stream): version {
+	async getLastVersionOf(aggregateId: DomainId): Promise<DomainVersion> {
+		const stream = this.getStream(aggregateId);
+		return this.getLastVersion(stream);
+	}
+
+	getLastVersion(stream: ReadonlyArray<DomainEvent>): DomainVersion {
 		return stream.length > 0 ? stream[0].version : -1;
 	}
 
-	static ensureWeAreAtTheRightVersion(lastVersion, eventVersion): void {
+	static ensureWeAreAtTheRightVersion(
+		lastVersion: DomainVersion,
+		eventVersion: DomainVersion
+	): void {
 		if (eventVersion !== lastVersion + 1) {
 			throw new Error('You are not up to date');
 		}
 	}
 
-	async add(aggregateId, expectedSaveVersion, events): Promise<void> {
+	async add(
+		aggregateId: DomainId,
+		expectedSaveVersion: DomainVersion,
+		events: ReadonlyArray<DomainEvent>
+	): Promise<void> {
 		const stream = this.getStream(aggregateId);
 		const lastVersion = this.getLastVersion(stream);
 
@@ -49,7 +69,5 @@ export default class InMemoryEventStore implements EventStore {
 		events.forEach((event) => {
 			stream.unshift(event);
 		});
-
-		return;
 	}
 }

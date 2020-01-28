@@ -1,24 +1,24 @@
 import {
-	Event,
-	id,
-	version as DDDVersion,
-	timestamp as DDDTimestamp,
+	DomainEvent,
+	DomainId,
+	DomainVersion,
+	DomainTimestamp,
 } from '../../../../../lib/DDD_ES/DDD_ES';
 
 import { v4 as uuid } from 'uuid';
 
-type CounterEventsNames = 'ADDED' | 'SUBTRACTED' | 'MULTIPLIED' | 'DIVIDED';
-interface HappyCounterEvent extends Event {
-	name: CounterEventsNames;
-	payload: number;
-}
-interface SadCounterEvent extends Event {
-	name: 'ERROR';
-	payload: string;
+export enum CounterEventsNames {
+	Added = 'Counter:Event:Added',
+	Subtracted = 'Counter:Event:Subtracted',
+	Multiplied = 'Counter:Event:Multiplied',
+	Divided = 'Counter:Event:Divided',
 }
 
 // We could use a functional type for errors here
-export type CounterEvent = HappyCounterEvent | SadCounterEvent;
+export interface CounterEvent extends DomainEvent {
+	name: CounterEventsNames;
+	payload: number;
+}
 
 export const createCounterEvent = ({
 	eventId = uuid(),
@@ -29,11 +29,11 @@ export const createCounterEvent = ({
 	payload,
 	meta,
 }: {
-	eventId?: id;
+	eventId?: DomainId;
 	name: CounterEventsNames;
-	aggregateId: id;
-	version: DDDVersion;
-	timestamp?: DDDTimestamp;
+	aggregateId: DomainId;
+	version: DomainVersion;
+	timestamp?: DomainTimestamp;
 	payload: number;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	meta?: any;

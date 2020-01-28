@@ -1,26 +1,25 @@
 import {
-	CommandHandler,
-	Event,
-	id,
-	version as DDDVersion,
-	Command as DDDCommand,
-	createCommand,
-	Command,
-	CommandResponse,
-} from './DDD_ES';
+	LibCommandHandler,
+	DomainEvent,
+	DomainId,
+	DomainVersion,
+	DomainCommand,
+	createDomainCommand,
+	DomainCommandResponse,
+} from '../DDD_ES';
 
-import timingCommandBusMiddleware from '../../app/server/middlewares/commandBus/timingCommandBusMiddleware';
-import loggerCommandBusMiddleware from '../../app/server/middlewares/commandBus/loggerCommandBusMiddleware';
-import dummyCommandBusMiddleware from '../../app/server/middlewares/commandBus/dummyCommandBusMiddleware';
+import timingCommandBusMiddleware from '../../../app/server/middlewares/commandBus/timingCommandBusMiddleware';
+import loggerCommandBusMiddleware from '../../../app/server/middlewares/commandBus/loggerCommandBusMiddleware';
+import dummyCommandBusMiddleware from '../../../app/server/middlewares/commandBus/dummyCommandBusMiddleware';
 import commandBusDispatcher from './commandBusDispatcher';
 import commandBus from './commandBus';
 import { right } from 'fp-ts/lib/Either';
 
 const createSomeEvent = (
-	aggregateId: id,
-	version: DDDVersion,
+	aggregateId: DomainId,
+	version: DomainVersion,
 	quantity: number
-): Event => ({
+): DomainEvent => ({
 	eventId: 'SOME_EVENT_ID',
 	name: 'A_COMMAND_NAME',
 	aggregateId: aggregateId,
@@ -37,7 +36,7 @@ describe('a command bus', () => {
 
 	const t = jest.fn(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		async (command: Command): Promise<CommandResponse> =>
+		async (command: DomainCommand): Promise<DomainCommandResponse> =>
 			right({
 				aggregateId: aggregateId,
 				version: event.version,
@@ -45,13 +44,13 @@ describe('a command bus', () => {
 			})
 	);
 
-	const dummyCommandHandler: CommandHandler = Object.assign(t, {
+	const dummyCommandHandler: LibCommandHandler = Object.assign(t, {
 		listenTo() {
 			return 'A_COMMAND_NAME';
 		},
 	});
 
-	const command: DDDCommand = createCommand({
+	const command: DomainCommand = createDomainCommand({
 		name: 'A_COMMAND_NAME',
 	});
 
@@ -81,7 +80,7 @@ describe('a command bus', () => {
 	});
 
 	it('throws when we call an unknown command', async () => {
-		const failingCommand = createCommand({ name: 'FAILING_COMMAND ' });
+		const failingCommand = createDomainCommand({ name: 'FAILING_COMMAND ' });
 		try {
 			await cb(failingCommand);
 		} catch (e) {

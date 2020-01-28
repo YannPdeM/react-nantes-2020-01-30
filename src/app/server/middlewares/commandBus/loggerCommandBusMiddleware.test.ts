@@ -1,25 +1,27 @@
 import {
-	Command,
-	CommandBusMiddleware,
-	CommandResponse,
-	createCommand,
+	DomainCommand,
+	LibCommandBusMiddleware,
+	DomainCommandResponse,
+	createDomainCommand,
 } from '../../../../lib/DDD_ES/DDD_ES';
 
 import LoggerCommandBusMiddleware from './loggerCommandBusMiddleware';
 import { right } from 'fp-ts/lib/Either';
 
 describe('A LoggerCommandBusMiddleware', () => {
-	const aCommand: Command = createCommand({ name: 'SOME_COMMAND_NAME' });
+	const aCommand: DomainCommand = createDomainCommand({
+		name: 'SOME_COMMAND_NAME',
+	});
 
 	const aCommandBusMiddleware = jest.fn(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		async (command: Command): Promise<CommandResponse> =>
+		async (command: DomainCommand): Promise<DomainCommandResponse> =>
 			right({
 				aggregateId: '',
 				version: 0,
 				events: [],
 			})
-	) as jest.MockedFunction<CommandBusMiddleware>;
+	) as jest.MockedFunction<LibCommandBusMiddleware>;
 
 	const aLogger = {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -40,7 +42,7 @@ describe('A LoggerCommandBusMiddleware', () => {
 		expect(aCommandBusMiddleware.mock.calls.length).toBe(1);
 	});
 
-	it('logs the Command going through', async () => {
+	it('logs the DomainCommand going through', async () => {
 		await aLoggerCommandBusMiddleware(aCommand);
 		expect(aLogger.log.mock.calls.length).toBe(1);
 		expect(aLogger.log.mock.calls[0][0]).toMatchObject(

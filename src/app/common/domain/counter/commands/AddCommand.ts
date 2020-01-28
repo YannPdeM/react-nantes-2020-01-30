@@ -1,12 +1,10 @@
-import {
-	Command as DDDCommand,
-	id as DDDId,
-} from '../../../../../lib/DDD_ES/DDD_ES';
+import { DomainCommand, DomainId } from '../../../../../lib/DDD_ES/DDD_ES';
+import { CounterCommandNames } from './CounterCommandNames';
 
-export interface AddCommand extends DDDCommand {
-	name: 'COUNTER_ADD';
+export interface AddCommand extends DomainCommand {
+	name: CounterCommandNames.Add;
 	payload: {
-		aggregateId: DDDId;
+		aggregateId: DomainId;
 		howMuch: number;
 	};
 }

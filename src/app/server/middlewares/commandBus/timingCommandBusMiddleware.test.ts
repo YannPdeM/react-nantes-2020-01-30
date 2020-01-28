@@ -1,25 +1,27 @@
 import {
-	Command,
-	CommandBusMiddleware,
-	CommandResponse,
-	createCommand,
+	DomainCommand,
+	LibCommandBusMiddleware,
+	DomainCommandResponse,
+	createDomainCommand,
 } from '../../../../lib/DDD_ES/DDD_ES';
 
 import timingCommandBusMiddleware from './timingCommandBusMiddleware';
 import { right } from 'fp-ts/lib/Either';
 
 describe('A TimingCommandBusMiddleware', () => {
-	const aCommand: Command = createCommand({ name: 'SOME_COMMAND_NAME' });
+	const aCommand: DomainCommand = createDomainCommand({
+		name: 'SOME_COMMAND_NAME',
+	});
 
 	const aCommandBusMiddleware = jest.fn(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		async (command: Command): Promise<CommandResponse> =>
+		async (command: DomainCommand): Promise<DomainCommandResponse> =>
 			right({
 				aggregateId: '',
 				version: 0,
 				events: [],
 			})
-	) as jest.MockedFunction<CommandBusMiddleware>;
+	) as jest.MockedFunction<LibCommandBusMiddleware>;
 
 	const aLogger = {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -40,7 +42,7 @@ describe('A TimingCommandBusMiddleware', () => {
 		expect(aCommandBusMiddleware.mock.calls.length).toBe(1);
 	});
 
-	it('logs the time taken for a Command to be executed', async () => {
+	it('logs the time taken for a DomainCommand to be executed', async () => {
 		const COMMAND_NAME_RE = /(^Command )(.+)( took [0-9]+ ms$)/;
 		const TIME_TAKEN_RE = /(^Command .+ took )([0-9]+)( ms$)/;
 

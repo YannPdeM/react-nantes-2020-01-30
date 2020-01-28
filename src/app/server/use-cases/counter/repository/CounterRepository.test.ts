@@ -1,6 +1,9 @@
-import { createCounterEvent } from '../../../../common/domain/counter/events/CounterEvents';
+import {
+	CounterEventsNames,
+	createCounterEvent,
+} from '../../../../common/domain/counter/events/CounterEvents';
 
-import InMemoryEventStore from '../../../../../lib/infrastructure/InMemoryEventStore';
+import InMemoryEventStore from '../../../../../lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
 import CounterRepository from './CounterRepository';
 
 import { v4 as uuid } from 'uuid';
@@ -10,14 +13,14 @@ describe('a CounterRepository', () => {
 
 	const firstEventEver = createCounterEvent({
 		eventId: uuid(),
-		name: 'ADDED',
+		name: CounterEventsNames.Added,
 		version: 0,
 		timestamp: Date.now(),
 		payload: 120,
 		aggregateId: counterId,
 	});
 	const secondEvent = createCounterEvent({
-		name: 'ADDED',
+		name: CounterEventsNames.Added,
 		version: firstEventEver.version + 1,
 		payload: 3,
 		aggregateId: counterId,

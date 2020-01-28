@@ -1,16 +1,16 @@
 import {
-	Command,
-	CommandBusMiddleware,
-	CommandBusMiddlewareFactory,
-	CommandResponse,
+	DomainCommand,
+	LibCommandBusMiddleware,
+	LibCommandBusMiddlewareFactory,
+	DomainCommandResponse,
 } from '../../../../lib/DDD_ES/DDD_ES';
 import { Logger } from '../../../../lib/utils/Logger';
 
-export default (logger: Logger): CommandBusMiddlewareFactory => (
-	next: CommandBusMiddleware
-): CommandBusMiddleware => async (
-	command: Command
-): Promise<CommandResponse> => {
+export default (logger: Logger): LibCommandBusMiddlewareFactory => (
+	next: LibCommandBusMiddleware
+): LibCommandBusMiddleware => async (
+	command: DomainCommand
+): Promise<DomainCommandResponse> => {
 	const startTime = Date.now();
 	const response = await next(command);
 	const endTime = Date.now();

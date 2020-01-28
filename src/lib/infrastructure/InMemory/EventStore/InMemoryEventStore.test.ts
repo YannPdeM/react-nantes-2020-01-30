@@ -1,11 +1,11 @@
-import { id, version as DDDVersion, Event } from '../DDD_ES/DDD_ES';
+import { DomainId, DomainVersion, DomainEvent } from '../../../DDD_ES/DDD_ES';
 import InMemoryEventStore from './InMemoryEventStore';
 
 const SomethingHappenedEvent = (
-	aggregateId: id,
-	version: DDDVersion,
+	aggregateId: DomainId,
+	version: DomainVersion,
 	whatever?: string
-): Event => ({
+): DomainEvent => ({
 	eventId: 'SOME_EVENT_ID',
 	name: 'SOMETHING_HAPPENED',
 	aggregateId: aggregateId,
@@ -64,5 +64,31 @@ describe('an event store', () => {
 		} catch (e) {
 			expect(e).toEqual(new Error('You are not up to date'));
 		}
+	});
+
+	it('returns -1 as the last version of a yet unused aggregateId', async () => {
+		const id = 'fourth_accumulator';
+		const eventStore = new InMemoryEventStore();
+		const lastVersion = await eventStore.getLastVersionOf(id);
+		expect(lastVersion).toBe(-1);
+	});
+
+	it('returns the last version of a used aggregateId', async () => {
+		const id = 'fifth_accumulator';
+
+		const eventStore = new InMemoryEventStore();
+
+		const getLastVersion = async (): Promise<DomainVersion> =>
+			await eventStore.getLastVersionOf(id);
+
+		expect(await getLastVersion()).toBe(-1);
+
+		const firstEvent = SomethingHappenedEvent(id, 0, 'first event');
+		await eventStore.add(id, firstEvent.version, [firstEvent]);
+		expect(await getLastVersion()).toBe(firstEvent.version);
+
+		const secondEvent = SomethingHappenedEvent(id, 1, 'second event');
+		await eventStore.add(id, secondEvent.version, [secondEvent]);
+		expect(await getLastVersion()).toBe(secondEvent.version);
 	});
 });

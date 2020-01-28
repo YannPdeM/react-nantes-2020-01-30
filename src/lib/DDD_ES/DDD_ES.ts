@@ -1,23 +1,24 @@
 import { Either } from 'fp-ts/lib/Either';
 import { v4 as uuid } from 'uuid';
 
-export type id = string;
-export type eventName = string;
-export type version = number;
-export type timestamp = number;
+export type DomainId = string;
+export type DomainEventName = string;
+export type DomainVersion = number;
+export type DomainTimestamp = number;
 
-export interface Event {
-	readonly name: eventName;
-	readonly eventId: id;
-	readonly aggregateId: id;
-	readonly version: version;
-	readonly timestamp: timestamp; // in theory optional
+export interface DomainEvent {
+	readonly name: DomainEventName;
+	readonly eventId: DomainId;
+	readonly aggregateId: DomainId;
+	readonly version: DomainVersion;
+	readonly timestamp: DomainTimestamp; // in theory optional
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	readonly payload?: any;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	readonly meta?: any;
 }
-export const createEvent = ({
+
+export const createDomainEvent = ({
 	name,
 	eventId = uuid(),
 	aggregateId,
@@ -26,16 +27,16 @@ export const createEvent = ({
 	payload,
 	meta,
 }: {
-	name: eventName;
-	eventId?: id;
-	aggregateId: id;
-	version: version;
-	timestamp?: timestamp;
+	name: DomainEventName;
+	eventId?: DomainId;
+	aggregateId: DomainId;
+	version: DomainVersion;
+	timestamp?: DomainTimestamp;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	payload?: any;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	meta?: any;
-}): Event => ({
+}): DomainEvent => ({
 	eventId,
 	name,
 	aggregateId,
@@ -45,55 +46,55 @@ export const createEvent = ({
 	meta,
 });
 
-export interface EventStore {
-	getEvents: (
-		aggregateId: id,
-		version?: version
-	) => Promise<ReadonlyArray<Event>>;
-	add: (
-		aggregateId: id,
-		expectedSaveVersion: version,
-		events: ReadonlyArray<Event>
-	) => Promise<void>;
+export interface DomainEntity {
+	id: DomainId;
+	lastVersion: DomainVersion;
+	applyEvents: (events: ReadonlyArray<DomainEvent>) => void;
 }
 
-export interface Entity {
-	id: id;
-	lastVersion: version;
-	applyEvents: (events: ReadonlyArray<Event>) => Promise<void>;
+export interface DomainViewModel {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	value: any;
+	version?: DomainVersion;
 }
 
-export interface Repository<Entity, Event> {
-	getById: (aggregateId: id) => Promise<Entity>;
+export interface DomainVersionedViewModel extends DomainViewModel {
+	version: DomainVersion;
+}
+
+export interface DomainRepository<Entity, Event> {
+	getById: (aggregateId: DomainId) => Promise<Entity>;
 	saveEvents: (
 		events: ReadonlyArray<Event>
 	) => Promise<{
-		lastVersion: version;
+		lastVersion: DomainVersion;
 		lastState: Entity;
 	}>;
 }
 
-export type commandName = string;
-export interface Command {
-	readonly name: commandName;
+export type DomainCommandName = string;
+
+export interface DomainCommand {
+	readonly name: DomainCommandName;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	readonly payload?: any;
 	readonly meta?: {
-		readonly timestamp: timestamp; // in theory optional
+		readonly timestamp: DomainTimestamp; // in theory optional
 	};
 }
-export const createCommand = ({
+
+export const createDomainCommand = ({
 	name,
 	payload = undefined,
 	meta,
 }: {
-	name: commandName;
+	name: DomainCommandName;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	payload?: any;
 	meta?: {
-		timestamp: timestamp; // in theory optional
+		timestamp: DomainTimestamp; // in theory optional
 	};
-}): Command => ({
+}): DomainCommand => ({
 	name,
 	payload,
 	meta:
@@ -104,31 +105,95 @@ export const createCommand = ({
 			  },
 });
 
-export interface HappyCommandResponse {
-	readonly aggregateId: id;
-	readonly version: version;
-	readonly events: ReadonlyArray<Event>;
+export interface DomainSuccessfulCommandResponse {
+	readonly aggregateId: DomainId;
+	readonly version: DomainVersion;
+	readonly events: ReadonlyArray<DomainEvent>;
 }
-export type CommandResponse = Either<Error, HappyCommandResponse>;
 
-export interface CommandBusMiddleware {
-	(command: Command): Promise<CommandResponse>;
+export type DomainCommandResponse = Either<
+	Error,
+	DomainSuccessfulCommandResponse
+>;
+
+/* ************************************************************************** */
+export interface LibEventStore {
+	getEvents: (
+		aggregateId: DomainId,
+		version?: DomainVersion
+	) => Promise<ReadonlyArray<DomainEvent>>;
+	add: (
+		aggregateId: DomainId,
+		expectedSaveVersion: DomainVersion,
+		events: ReadonlyArray<DomainEvent>
+	) => Promise<void>;
+	getLastVersionOf: (aggregateId: DomainId) => Promise<DomainVersion>;
 }
-export interface CommandBusMiddlewareFactory {
-	(next: CommandBusMiddleware): CommandBusMiddleware;
+
+/* ************************************************************************** */
+export interface LibCommandBusMiddleware {
+	(command: DomainCommand): Promise<DomainCommandResponse>;
+}
+
+export interface LibCommandBusMiddlewareFactory {
+	(next: LibCommandBusMiddleware): LibCommandBusMiddleware;
 }
 
 /*
- * the purely functional version would be:
+ * a purely functional version would be:
  *
  * type State = any;
  * interface CommandHandlerBis {
- * 	(state: State, command: Command): State
+ * 	(state: State, command: DomainCommand): State
  * }
  *
  * But here it will have to find the state from a repository
  */
-export interface CommandHandler {
-	(command: Command): Promise<CommandResponse>;
-	listenTo: () => commandName;
+export interface LibCommandHandler {
+	(command: DomainCommand): Promise<DomainCommandResponse>;
+
+	listenTo: () => DomainCommandName;
+}
+
+/* ************************************************************************** */
+export interface LibEventHandler {
+	(event: DomainEvent): Promise<void>;
+	listenTo: () => ReadonlyArray<DomainEventName>;
+}
+
+export interface LibEventBusMiddleware {
+	(event: DomainEvent): Promise<void>;
+}
+
+export interface LibEventBusMiddlewareFactory {
+	(next: LibEventBusMiddleware): LibEventBusMiddleware;
+}
+
+/* ************************************************************************** */
+export interface LibCache {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	get: (id: string, version?: DomainVersion) => Promise<any>;
+	set: (id: string, value: DomainViewModel) => Promise<void>;
+	delete: (id: string) => Promise<void>;
+}
+
+/* ************************************************************************** */
+
+export type DomainQueryName = string;
+
+export interface DomainQuery {
+	name: DomainQueryName;
+}
+
+export interface LibQueryHandler {
+	(query: DomainQuery): Promise<DomainViewModel>;
+	listenTo: () => DomainQueryName;
+}
+
+export interface LibQueryBusMiddleware {
+	(query: DomainQuery): Promise<DomainViewModel>;
+}
+
+export interface LibQueryBusMiddlewareFactory {
+	(next: LibQueryBusMiddleware): LibQueryBusMiddleware;
 }

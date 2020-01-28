@@ -1,19 +1,19 @@
 import {
-	Command,
-	CommandBusMiddleware,
-	CommandHandler,
-	CommandResponse,
-} from './DDD_ES';
+	DomainCommand,
+	LibCommandBusMiddleware,
+	LibCommandHandler,
+	DomainCommandResponse,
+} from '../DDD_ES';
 
 export default (
-	handlers: ReadonlyArray<CommandHandler>
-): CommandBusMiddleware => {
+	handlers: ReadonlyArray<LibCommandHandler>
+): LibCommandBusMiddleware => {
 	const handlersMap = {};
 	handlers.forEach((handler) => {
 		handlersMap[handler.listenTo()] = handler;
 	});
 
-	return (command: Command): CommandResponse => {
+	return (command: DomainCommand): Promise<DomainCommandResponse> => {
 		const { name: commandName } = command;
 		const handler = handlersMap[commandName];
 		if (handler === undefined) {

@@ -1,8 +1,11 @@
-import { createEvent } from '../../../../lib/DDD_ES/DDD_ES';
-import { Logger } from '../../../../lib/utils/Logger';
+import { createDomainEvent } from '../../../../lib/DDD_ES/DDD_ES';
 
 import Counter from './Counter';
-import { CounterEvent, createCounterEvent } from './events/CounterEvents';
+import {
+	CounterEvent,
+	CounterEventsNames,
+	createCounterEvent,
+} from './events/CounterEvents';
 
 describe('a Counter', () => {
 	it('can add', () => {
@@ -33,7 +36,7 @@ describe('a Counter', () => {
 		const counter = new Counter({ id: 'test_events' });
 
 		const addEvent = createCounterEvent({
-			name: 'ADDED',
+			name: CounterEventsNames.Added,
 			aggregateId: counter.id,
 			version: counter.lastVersion + 1,
 			payload: 5,
@@ -41,21 +44,21 @@ describe('a Counter', () => {
 		});
 
 		const subtractEvent = createCounterEvent({
-			name: 'SUBTRACTED',
+			name: CounterEventsNames.Subtracted,
 			aggregateId: counter.id,
 			version: counter.lastVersion + 2,
 			payload: 1,
 		});
 
 		const multiplyEvent = createCounterEvent({
-			name: 'MULTIPLIED',
+			name: CounterEventsNames.Multiplied,
 			aggregateId: counter.id,
 			version: counter.lastVersion + 3,
 			payload: 2,
 		});
 
 		const divideEvent = createCounterEvent({
-			name: 'DIVIDED',
+			name: CounterEventsNames.Divided,
 			aggregateId: counter.id,
 			version: counter.lastVersion + 4,
 			payload: 4,
@@ -72,15 +75,16 @@ describe('a Counter', () => {
 	});
 
 	it('doesn’t crash on error events', () => {
-		let lastLog: string = null;
-		const logger: Logger = {
-			log: (message) => (lastLog = message),
+		const aLogger = {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			log: jest.fn((message): void => undefined),
 		};
+
 		const id = 'error_test';
 		const lastVersion = 2;
 
-		const counter = new Counter({ id, lastVersion }, logger);
-		const errorEvent = createEvent({
+		const counter = new Counter({ id, lastVersion }, aLogger);
+		const errorEvent = createDomainEvent({
 			name: 'ERROR',
 			aggregateId: counter.id,
 			version: counter.lastVersion + 1,
@@ -89,8 +93,8 @@ describe('a Counter', () => {
 		}) as CounterEvent;
 		counter.applyEvents([errorEvent]);
 
-		expect(lastLog).toBe(
-			`${id}@${lastVersion + 1}: ignored error: ${errorEvent.payload}`
+		expect(aLogger.log.mock.calls[0][0]).toBe(
+			`${id}@${lastVersion + 1}: ignored event: ${errorEvent.payload}`
 		);
 	});
 });
