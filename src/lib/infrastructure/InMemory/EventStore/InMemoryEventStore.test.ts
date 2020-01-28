@@ -91,4 +91,33 @@ describe('an event store', () => {
 		await eventStore.add(id, secondEvent.version, [secondEvent]);
 		expect(await getLastVersion()).toBe(secondEvent.version);
 	});
+
+	it('returns all events by insertion order regardless of the aggregates', async () => {
+		const firstId = 'sixth_accumulator';
+		const secondId = 'seventh_accumulator';
+
+		const eventStore = new InMemoryEventStore();
+
+		const firstEvent = SomethingHappenedEvent(firstId, 0, 'first event');
+		const secondEvent = SomethingHappenedEvent(firstId, 1, 'second event');
+
+		const thirdEvent = SomethingHappenedEvent(secondId, 0, 'first event');
+
+		const fourthEvent = SomethingHappenedEvent(firstId, 2, 'third event');
+
+		const fifthEvent = SomethingHappenedEvent(secondId, 1, 'second event');
+
+		await eventStore.add(firstId, 0, [firstEvent, secondEvent]);
+		await eventStore.add(secondId, 0, [thirdEvent]);
+		await eventStore.add(firstId, 2, [fourthEvent]);
+		await eventStore.add(secondId, 1, [fifthEvent]);
+
+		expect(await eventStore.getAllEvents()).toEqual([
+			firstEvent,
+			secondEvent,
+			thirdEvent,
+			fourthEvent,
+			fifthEvent,
+		]);
+	});
 });

@@ -128,6 +128,7 @@ export interface LibEventStore {
 		events: ReadonlyArray<DomainEvent>
 	) => Promise<void>;
 	getLastVersionOf: (aggregateId: DomainId) => Promise<DomainVersion>;
+	getAllEvents: () => Promise<ReadonlyArray<DomainEvent>>;
 }
 
 /* ************************************************************************** */
