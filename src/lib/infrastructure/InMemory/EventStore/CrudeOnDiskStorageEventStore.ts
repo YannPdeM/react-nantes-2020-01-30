@@ -3,8 +3,14 @@ import { DomainEvent } from '../../../DDD_ES/DDD_ES';
 
 import { promises as fsPromises } from 'fs';
 
-class CrudeOnDiskStorageEventStore extends InMemoryEventStore {
+export default class CrudeOnDiskStorageEventStore extends InMemoryEventStore {
 	filePath: string;
+
+	static async build(filePath: string): Promise<CrudeOnDiskStorageEventStore> {
+		const instance = new CrudeOnDiskStorageEventStore(filePath);
+		await instance.restore();
+		return instance;
+	}
 
 	constructor(filePath: string) {
 		super();
@@ -30,7 +36,13 @@ Please NEVER use \`CrudeOnDiskStorageEventStore\` in production:
 	}
 
 	async restore(): Promise<void> {
-		const content = (await fsPromises.readFile(this.filePath)).toString();
+		let content;
+		try {
+			content = (await fsPromises.readFile(this.filePath)).toString();
+		} catch (e) {
+			content = ''
+		}
+
 		if (content !== '') {
 			const events: ReadonlyArray<DomainEvent> = JSON.parse(content);
 			events.forEach((event) =>
@@ -39,11 +51,3 @@ Please NEVER use \`CrudeOnDiskStorageEventStore\` in production:
 		}
 	}
 }
-
-export default async (
-	filePath: string
-): Promise<CrudeOnDiskStorageEventStore> => {
-	const instance = new CrudeOnDiskStorageEventStore(filePath);
-	await instance.restore();
-	return instance;
-};

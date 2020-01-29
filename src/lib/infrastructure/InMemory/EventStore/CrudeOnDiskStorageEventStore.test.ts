@@ -1,4 +1,4 @@
-import newCrudeOnDiskStorageEventStore from './CrudeOnDiskStorageEventStore';
+import CrudeOnDiskStorageEventStore from './CrudeOnDiskStorageEventStore';
 import { DomainEvent, DomainId, DomainVersion } from '../../../DDD_ES/DDD_ES';
 
 import { promises as fsPromises } from 'fs';
@@ -41,7 +41,7 @@ describe('a CrudeOnDiskStorageEventStore', () => {
 	afterEach(REINIT_FILE());
 
 	it('stores', async () => {
-		const eventStore = await newCrudeOnDiskStorageEventStore(filePath);
+		const eventStore = await CrudeOnDiskStorageEventStore.build(filePath);
 		expect(await eventStore.getAllEvents()).toEqual([]);
 
 		await eventStore.add(firstId, 0, [firstEvent, secondEvent]);
@@ -64,14 +64,14 @@ describe('a CrudeOnDiskStorageEventStore', () => {
 		];
 		await fsPromises.writeFile(filePath, JSON.stringify(events));
 
-		const eventStore = await newCrudeOnDiskStorageEventStore(filePath);
+		const eventStore = await CrudeOnDiskStorageEventStore.build(filePath);
 		expect(await eventStore.getAllEvents()).toEqual(events);
 	});
 
 	it('doesn’t choke an empty (for example: new) file', async () => {
-		await REINIT_FILE('')();
+		await fsPromises.unlink(filePath);
 
-		const eventStore = await newCrudeOnDiskStorageEventStore(filePath);
+		const eventStore = await CrudeOnDiskStorageEventStore.build(filePath);
 		expect(await eventStore.getAllEvents()).toEqual([]);
 	});
 });
