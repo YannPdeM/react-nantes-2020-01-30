@@ -24,7 +24,7 @@ export const createDomainEvent = ({
 	version,
 	timestamp = Date.now(),
 	payload = none,
-	meta= none,
+	meta = none,
 }: {
 	name: DomainEventName;
 	eventId?: DomainId;
@@ -55,8 +55,8 @@ export interface DomainViewModel {
 }
 
 export type DomainVersionedViewModel = DomainViewModel & {
-	version: Some<DomainVersion>
-}
+	version: Some<DomainVersion>;
+};
 
 export interface DomainRepository<Entity, Event> {
 	getById: (aggregateId: DomainId) => Promise<Entity>;
@@ -72,7 +72,7 @@ export type DomainCommandName = string;
 
 export type CommandMeta = {
 	readonly timestamp: DomainTimestamp; // in theory optional
-}
+};
 
 export interface DomainCommand {
 	readonly name: DomainCommandName;
@@ -97,8 +97,8 @@ export const createDomainCommand = ({
 		meta !== none
 			? meta
 			: some({
-				timestamp: Date.now(),
-			}),
+					timestamp: Date.now(),
+			  }),
 });
 
 export interface DomainSuccessfulCommandResponse {

@@ -51,7 +51,11 @@ export default class Counter implements DomainEntity {
 	}
 
 	applyEvents(events: ReadonlyArray<CounterEvent>): void {
-		for (const { name, payload: { value }, version } of events) {
+		for (const {
+			name,
+			payload: { value },
+			version,
+		} of events) {
 			this.lastVersion = version;
 			this[Counter.eventNameToMethod(name)](value);
 		}
@@ -79,7 +83,11 @@ export default class Counter implements DomainEntity {
 		);
 	}
 
-	add({ payload: {value:{howMuch}} }: AddCommand): ReadonlyArray<CounterEvent> {
+	add({
+		payload: {
+			value: { howMuch },
+		},
+	}: AddCommand): ReadonlyArray<CounterEvent> {
 		return [
 			createCounterEvent({
 				name: CounterEventsNames.Added,
@@ -91,7 +99,9 @@ export default class Counter implements DomainEntity {
 	}
 
 	subtract({
-		payload: { value: { howMuch} },
+		payload: {
+			value: { howMuch },
+		},
 	}: SubtractCommand): ReadonlyArray<CounterEvent> {
 		return [
 			createCounterEvent({
@@ -104,7 +114,9 @@ export default class Counter implements DomainEntity {
 	}
 
 	multiply({
-					payload: { value: { howMuch} },
+		payload: {
+			value: { howMuch },
+		},
 	}: MultiplyCommand): ReadonlyArray<CounterEvent> {
 		return [
 			createCounterEvent({
@@ -117,7 +129,9 @@ export default class Counter implements DomainEntity {
 	}
 
 	divide({
-				 payload: { value: { howMuch} },
+		payload: {
+			value: { howMuch },
+		},
 	}: DivideCommand): ReadonlyArray<CounterEvent> {
 		if (howMuch === 0) {
 			throw new Error('Cannot divide by 0');

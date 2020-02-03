@@ -1,4 +1,7 @@
-import { DomainCommand, DomainId } from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
+import {
+	DomainCommand,
+	DomainId,
+} from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 import { Some } from 'fp-ts/lib/Option';
 
 export enum CounterCommandNames {

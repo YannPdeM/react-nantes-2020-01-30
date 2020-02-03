@@ -17,7 +17,7 @@ const SomethingHappenedEvent = (
 	payload: some({
 		whatever: whatever || 'anything',
 	}),
-	meta: none
+	meta: none,
 });
 
 describe('a CrudeOnDiskStorageEventStore', () => {

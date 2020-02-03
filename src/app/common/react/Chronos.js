@@ -233,7 +233,7 @@ class ClassTimeComponent extends React.Component {
          type: EVENT_TYPES.TICKED,
          lastHeartbeat: newHeartbeat,
       });
-   };
+   }
 
    run (ev) {
       ev.preventDefault();

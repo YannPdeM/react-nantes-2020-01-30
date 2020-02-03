@@ -35,42 +35,56 @@ describe('addEventHandler', () => {
 
 	it('stores the last version and value', async () => {
 		await aeh(firstAddedEvent);
-		const t1:Option<SingleCounterViewModel> = await cache.get(`${firstCounterId}:lastValue`) as Option<SingleCounterViewModel>;
-		expect(t1).toEqual(some({
-			version: some(firstAddedEvent.version),
-			value: some({
-				id: firstAddedEvent.aggregateId,
-				value: firstAddedEvent.payload,
-			}),
-		}));
+		const t1: Option<SingleCounterViewModel> = (await cache.get(
+			`${firstCounterId}:lastValue`
+		)) as Option<SingleCounterViewModel>;
+		expect(t1).toEqual(
+			some({
+				version: some(firstAddedEvent.version),
+				value: some({
+					id: firstAddedEvent.aggregateId,
+					value: firstAddedEvent.payload,
+				}),
+			})
+		);
 
 		await aeh(secondAddedEvent);
 		await aeh(thirdAddedEvent);
 
-		const t2:Option<SingleCounterViewModel> = await cache.get(`${firstCounterId}:lastValue`) as Option<SingleCounterViewModel>;
-		expect(t2).toEqual(some({
-			version: some(secondAddedEvent.version),
-			value: some({
-				id: secondAddedEvent.aggregateId,
-				value: some(fold<unknown, number>(
-					() => 0,
-					(a:number) => a
-				)(firstAddedEvent.payload) + fold<unknown, number>(
-					() => 0,
-					(a:number) => a
-				)(secondAddedEvent.payload)),
-			}),
-		}));
+		const t2: Option<SingleCounterViewModel> = (await cache.get(
+			`${firstCounterId}:lastValue`
+		)) as Option<SingleCounterViewModel>;
+		expect(t2).toEqual(
+			some({
+				version: some(secondAddedEvent.version),
+				value: some({
+					id: secondAddedEvent.aggregateId,
+					value: some(
+						fold<unknown, number>(
+							() => 0,
+							(a: number) => a
+						)(firstAddedEvent.payload) +
+							fold<unknown, number>(
+								() => 0,
+								(a: number) => a
+							)(secondAddedEvent.payload)
+					),
+				}),
+			})
+		);
 
-
-		const t3:Option<SingleCounterViewModel> = await cache.get(`${secondCounterId}:lastValue`) as Option<SingleCounterViewModel>;
-		expect(t3).toEqual(some({
-			version: some(thirdAddedEvent.version),
-			value: some({
-				id: thirdAddedEvent.aggregateId,
-				value: thirdAddedEvent.payload,
-			}),
-		}));
+		const t3: Option<SingleCounterViewModel> = (await cache.get(
+			`${secondCounterId}:lastValue`
+		)) as Option<SingleCounterViewModel>;
+		expect(t3).toEqual(
+			some({
+				version: some(thirdAddedEvent.version),
+				value: some({
+					id: thirdAddedEvent.aggregateId,
+					value: thirdAddedEvent.payload,
+				}),
+			})
+		);
 	});
 
 	it('listens to the specified events (plural, so array)', () => {
@@ -82,22 +96,39 @@ describe('addEventHandler', () => {
 		await aeh(secondAddedEvent);
 		await aeh(thirdAddedEvent);
 
-		const t4:Option<SingleCounterViewModel> = await cache.get(`${firstCounterId}:lastValue`) as Option<SingleCounterViewModel>;
-		expect(t4).toEqual(some({
-			version: some(secondAddedEvent.version),
-			value: some({
-				id: secondAddedEvent.aggregateId,
-				value: some(fold<unknown, number>(() => 0, (a:number) => a)(firstAddedEvent.payload) + fold<unknown, number>(() => 0, (a:number) => a)(secondAddedEvent.payload)),
-			}),
-		}));
+		const t4: Option<SingleCounterViewModel> = (await cache.get(
+			`${firstCounterId}:lastValue`
+		)) as Option<SingleCounterViewModel>;
+		expect(t4).toEqual(
+			some({
+				version: some(secondAddedEvent.version),
+				value: some({
+					id: secondAddedEvent.aggregateId,
+					value: some(
+						fold<unknown, number>(
+							() => 0,
+							(a: number) => a
+						)(firstAddedEvent.payload) +
+							fold<unknown, number>(
+								() => 0,
+								(a: number) => a
+							)(secondAddedEvent.payload)
+					),
+				}),
+			})
+		);
 
-		const t5:Option<SingleCounterViewModel> = await cache.get(`${secondCounterId}:lastValue`) as Option<SingleCounterViewModel>;
-		expect(t5).toEqual(some({
-			version: some(thirdAddedEvent.version),
-			value: some({
-				id: thirdAddedEvent.aggregateId,
-				value: thirdAddedEvent.payload,
-			}),
-		}));
+		const t5: Option<SingleCounterViewModel> = (await cache.get(
+			`${secondCounterId}:lastValue`
+		)) as Option<SingleCounterViewModel>;
+		expect(t5).toEqual(
+			some({
+				version: some(thirdAddedEvent.version),
+				value: some({
+					id: thirdAddedEvent.aggregateId,
+					value: thirdAddedEvent.payload,
+				}),
+			})
+		);
 	});
 });

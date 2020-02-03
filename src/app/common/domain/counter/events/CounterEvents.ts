@@ -17,7 +17,7 @@ export enum CounterEventsNames {
 
 export interface CounterEvent extends DomainEvent {
 	name: CounterEventsNames;
-	payload: Some<number>
+	payload: Some<number>;
 }
 export const createCounterEvent = ({
 	eventId = uuid(),
@@ -41,6 +41,6 @@ export const createCounterEvent = ({
 	aggregateId,
 	version,
 	timestamp,
-	payload: <Some<number>>some(payload),
+	payload: some(payload) as Some<number>,
 	meta,
 });

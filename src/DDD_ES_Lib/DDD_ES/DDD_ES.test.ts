@@ -2,7 +2,8 @@ import {
 	DomainEvent,
 	createDomainEvent,
 	DomainCommand,
-	createDomainCommand, CommandMeta,
+	createDomainCommand,
+	CommandMeta,
 } from './DDD_ES';
 import { v4 as uuid } from 'uuid';
 import { none, Some, some } from 'fp-ts/lib/Option';
@@ -71,8 +72,8 @@ describe('createDomainCommand', () => {
 			meta: {
 				_tag: 'Some',
 				value: {
-					timestamp:expect.any(Number)
-						},
+					timestamp: expect.any(Number),
+				},
 			},
 		});
 		const { meta } = command;

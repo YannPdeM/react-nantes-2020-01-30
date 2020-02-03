@@ -40,7 +40,7 @@ Please NEVER use \`CrudeOnDiskStorageEventStore\` in production:
 		try {
 			content = (await fsPromises.readFile(this.filePath)).toString();
 		} catch (e) {
-			content = ''
+			content = '';
 		}
 
 		if (content !== '') {

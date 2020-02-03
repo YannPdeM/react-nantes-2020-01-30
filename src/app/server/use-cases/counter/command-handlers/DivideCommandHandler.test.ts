@@ -1,6 +1,4 @@
-import {
-	CounterCommandNames,
-} from '../../../../common/domain/counter/commands/CounterCommands';
+import { CounterCommandNames } from '../../../../common/domain/counter/commands/CounterCommands';
 
 import DivideCommandHandler from './DivideCommandHandler';
 import InMemoryEventStore from '../../../../../DDD_ES_Lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
@@ -12,7 +10,6 @@ import { Right } from 'fp-ts/lib/Either';
 import { CounterEventsNames } from '../../../../common/domain/counter/events/CounterEvents';
 import { either } from 'fp-ts';
 import { none, some } from 'fp-ts/lib/Option';
-
 
 describe('An DivideCommandHandler', () => {
 	const AN_AGGREGATE_ID = 'AN_AGGREGATE_ID';

@@ -9,12 +9,16 @@ export default (): LibCache => {
 	const innerMap: Map<string, unknown> = new Map();
 
 	return {
-		get: async (id: string, version: DomainVersion): Promise<Option<unknown>> => {
+		get: async (
+			id: string,
+			version: DomainVersion
+		): Promise<Option<unknown>> => {
 			const inCache = innerMap.get(id) as DomainViewModel;
-			if(inCache === undefined) {
+			if (inCache === undefined) {
 				return none;
 			} else {
-				return version === undefined || version === toNullable(inCache.version)
+				return version === undefined ||
+					version === toNullable(inCache.version)
 					? some(inCache)
 					: none;
 			}

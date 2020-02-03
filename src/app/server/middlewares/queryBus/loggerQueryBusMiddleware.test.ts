@@ -11,13 +11,16 @@ describe('a loggerQueryBusMiddleware', () => {
 			name: 'SOME_QUERY_NAME',
 		};
 
-		const aQbm = <jest.MockedFunction<LibQueryBusMiddleware>><unknown>jest.fn(
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			async (query: DomainQuery) => ({
-				value: some({
-					something: 'anything',
-				}),
-			})
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+		const aQbm = <jest.MockedFunction<LibQueryBusMiddleware>>(
+			(<unknown>jest.fn(
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				async (query: DomainQuery) => ({
+					value: some({
+						something: 'anything',
+					}),
+				})
+			))
 		);
 
 		const aLogger = {

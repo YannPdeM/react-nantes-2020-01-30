@@ -26,14 +26,17 @@ describe('a numberAndMedianQueryHandler', () => {
 			version: none,
 		});
 
-		const vm = await aNamqh(aQuery) as NumberOfCountersAndMedianOfAllViewModel;
-
-		expect(vm).toEqual({
-			value: {
+		const vm = (await aNamqh(
+			aQuery
+		)) as NumberOfCountersAndMedianOfAllViewModel;
+		const expected: NumberOfCountersAndMedianOfAllViewModel = {
+			version: none,
+			value: some({
 				numberOfCounters: 2,
 				medianOfAll: 0.5,
-			},
-		});
+			}),
+		};
+		expect(vm).toEqual(expected);
 	});
 
 	it('listens to the specified query', () => {

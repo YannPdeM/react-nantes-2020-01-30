@@ -1,6 +1,6 @@
 import inMemoryCache from './InMemoryCache';
 import { DomainVersionedViewModel } from '../../../DDD_ES/DDD_ES';
-import { Some, some, map, toNullable, none } from 'fp-ts/lib/Option';
+import { Some, some, none } from 'fp-ts/lib/Option';
 
 describe('a simple cache', () => {
 	it('returns `none` when there is nothing in front of the key', async () => {
@@ -12,7 +12,7 @@ describe('a simple cache', () => {
 		const cache = inMemoryCache();
 		const key = 'a key';
 		const aVV: DomainVersionedViewModel = {
-			version: <Some<number>>some(0),
+			version: some(0) as Some<number>,
 			value: some(123),
 		};
 		await cache.set(key, aVV);
@@ -25,7 +25,7 @@ describe('a simple cache', () => {
 		const cache = inMemoryCache();
 		const key = 'another key';
 		const aVV: DomainVersionedViewModel = {
-			version: <Some<number>>some(3),
+			version: some(3) as Some<number>,
 			value: some(456),
 		};
 		await cache.set(key, aVV);
@@ -39,13 +39,15 @@ describe('a simple cache', () => {
 		const cache = inMemoryCache();
 		const key = 'yet another key';
 		const aBorkedVV = {
-			version: <Some<number>>some(0),
+			version: some(0) as Some<number>,
 			value: undefined,
 		};
 		await cache.set(key, aBorkedVV);
-		expect((await cache.get(key))).toEqual(some({
-			version: some(0),
-			value: none,
-		}));
+		expect(await cache.get(key)).toEqual(
+			some({
+				version: some(0),
+				value: none,
+			})
+		);
 	});
 });
