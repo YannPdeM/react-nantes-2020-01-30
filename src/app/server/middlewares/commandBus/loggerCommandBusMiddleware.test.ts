@@ -3,7 +3,7 @@ import {
 	LibCommandBusMiddleware,
 	DomainCommandResponse,
 	createDomainCommand,
-} from '../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 
 import LoggerCommandBusMiddleware from './loggerCommandBusMiddleware';
 import { right } from 'fp-ts/lib/Either';

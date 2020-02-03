@@ -1,5 +1,6 @@
 import { Either } from 'fp-ts/lib/Either';
 import { v4 as uuid } from 'uuid';
+import { none, Option, some, Some } from 'fp-ts/lib/Option';
 
 export type DomainId = string;
 export type DomainEventName = string;
@@ -12,10 +13,8 @@ export interface DomainEvent {
 	readonly aggregateId: DomainId;
 	readonly version: DomainVersion;
 	readonly timestamp: DomainTimestamp; // in theory optional
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	readonly payload?: any;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	readonly meta?: any;
+	readonly payload: Option<unknown>;
+	readonly meta: Option<unknown>;
 }
 
 export const createDomainEvent = ({
@@ -24,18 +23,16 @@ export const createDomainEvent = ({
 	aggregateId,
 	version,
 	timestamp = Date.now(),
-	payload,
-	meta,
+	payload = none,
+	meta= none,
 }: {
 	name: DomainEventName;
 	eventId?: DomainId;
 	aggregateId: DomainId;
 	version: DomainVersion;
 	timestamp?: DomainTimestamp;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	payload?: any;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	meta?: any;
+	payload?: Option<unknown>;
+	meta?: Option<unknown>;
 }): DomainEvent => ({
 	eventId,
 	name,
@@ -53,13 +50,12 @@ export interface DomainEntity {
 }
 
 export interface DomainViewModel {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	value: any;
-	version?: DomainVersion;
+	value: Option<unknown>;
+	version: Option<DomainVersion>;
 }
 
-export interface DomainVersionedViewModel extends DomainViewModel {
-	version: DomainVersion;
+export type DomainVersionedViewModel = DomainViewModel & {
+	version: Some<DomainVersion>
 }
 
 export interface DomainRepository<Entity, Event> {
@@ -74,35 +70,35 @@ export interface DomainRepository<Entity, Event> {
 
 export type DomainCommandName = string;
 
+export type CommandMeta = {
+	readonly timestamp: DomainTimestamp; // in theory optional
+}
+
 export interface DomainCommand {
 	readonly name: DomainCommandName;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	readonly payload?: any;
-	readonly meta?: {
-		readonly timestamp: DomainTimestamp; // in theory optional
-	};
+	readonly payload: Option<unknown>;
+	readonly meta: Option<CommandMeta>;
 }
 
 export const createDomainCommand = ({
 	name,
-	payload = undefined,
-	meta,
+	payload = none,
+	meta = none,
 }: {
 	name: DomainCommandName;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	payload?: any;
-	meta?: {
+	payload?: Option<unknown>;
+	meta?: Option<{
 		timestamp: DomainTimestamp; // in theory optional
-	};
+	}>;
 }): DomainCommand => ({
 	name,
 	payload,
 	meta:
-		meta !== undefined
+		meta !== none
 			? meta
-			: {
-					timestamp: Date.now(),
-			  },
+			: some({
+				timestamp: Date.now(),
+			}),
 });
 
 export interface DomainSuccessfulCommandResponse {
@@ -173,8 +169,7 @@ export interface LibEventBusMiddlewareFactory {
 
 /* ************************************************************************** */
 export interface LibCache {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	get: (id: string, version?: DomainVersion) => Promise<any>;
+	get: (id: string, version?: DomainVersion) => Promise<Option<unknown>>;
 	set: (id: string, value: DomainViewModel) => Promise<void>;
 	delete: (id: string) => Promise<void>;
 }

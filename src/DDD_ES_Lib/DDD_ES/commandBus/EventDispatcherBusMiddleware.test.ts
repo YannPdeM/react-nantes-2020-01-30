@@ -14,6 +14,7 @@ import {
 import { right } from 'fp-ts/lib/Either';
 import commandBus from './commandBus';
 import eventBus from '../eventBus/eventBus';
+import { some } from 'fp-ts/lib/Option';
 
 describe(' an EventDispatcherBusMiddleware', () => {
 	const aSilentLogger = {
@@ -25,9 +26,9 @@ describe(' an EventDispatcherBusMiddleware', () => {
 
 	const aCommand = createDomainCommand({
 		name: 'AN_INTENTION',
-		payload: {
+		payload: some({
 			id: anAggregateId,
-		},
+		}),
 	});
 
 	const anEvent = createDomainEvent({

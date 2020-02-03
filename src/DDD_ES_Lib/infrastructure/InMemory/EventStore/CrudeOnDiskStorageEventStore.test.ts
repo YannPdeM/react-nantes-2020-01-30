@@ -2,6 +2,7 @@ import CrudeOnDiskStorageEventStore from './CrudeOnDiskStorageEventStore';
 import { DomainEvent, DomainId, DomainVersion } from '../../../DDD_ES/DDD_ES';
 
 import { promises as fsPromises } from 'fs';
+import { none, some } from 'fp-ts/lib/Option';
 
 const SomethingHappenedEvent = (
 	aggregateId: DomainId,
@@ -13,9 +14,10 @@ const SomethingHappenedEvent = (
 	aggregateId: aggregateId,
 	version: version,
 	timestamp: Date.now(),
-	payload: {
+	payload: some({
 		whatever: whatever || 'anything',
-	},
+	}),
+	meta: none
 });
 
 describe('a CrudeOnDiskStorageEventStore', () => {

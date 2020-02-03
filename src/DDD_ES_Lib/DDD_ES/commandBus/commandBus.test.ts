@@ -14,6 +14,7 @@ import dummyCommandBusMiddleware from '../../../app/server/middlewares/commandBu
 import commandBusDispatcher from './commandBusDispatcher';
 import commandBus from './commandBus';
 import { right } from 'fp-ts/lib/Either';
+import { none, some } from 'fp-ts/lib/Option';
 
 const createSomeEvent = (
 	aggregateId: DomainId,
@@ -25,9 +26,10 @@ const createSomeEvent = (
 	aggregateId: aggregateId,
 	version: version,
 	timestamp: Date.now(),
-	payload: {
+	payload: some({
 		qty: quantity,
-	},
+	}),
+	meta: none,
 });
 
 describe('a command bus', () => {

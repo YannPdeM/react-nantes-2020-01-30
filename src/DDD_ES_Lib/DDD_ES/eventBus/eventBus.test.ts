@@ -9,6 +9,7 @@ import eventBus from './eventBus';
 import timingEventBusMiddleware from '../../../app/server/middlewares/eventBus/timingEventBusMiddleware';
 import loggerEventBusMiddleware from '../../../app/server/middlewares/eventBus/loggerEventBusMiddleware';
 import eventBusDispatcher from './eventBusDispatcher';
+import { none, some } from 'fp-ts/lib/Option';
 
 const createSomeEvent = (
 	aggregateId: DomainId,
@@ -20,9 +21,10 @@ const createSomeEvent = (
 	aggregateId: aggregateId,
 	version: version,
 	timestamp: Date.now(),
-	payload: {
+	payload: some({
 		qty: quantity,
-	},
+	}),
+	meta: none,
 });
 
 describe(' an EventBus', () => {

@@ -2,11 +2,13 @@ import {
 	DomainId,
 	LibCache,
 	LibEventHandler,
-} from '../../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 import {
 	CounterEvent,
 	CounterEventsNames,
 } from '../../../../common/domain/counter/events/CounterEvents';
+import { getOrElse, none, Option, Some, some } from 'fp-ts/lib/Option';
+import { NumberOfCountersAndMedianOfAllViewModel } from '../../../../common/domain/counter/viewModels/numberOfCountersAndMedianOfAllViewModel';
 
 export default (cache: LibCache): LibEventHandler => {
 	const countersMap: Map<DomainId, number> = new Map();
@@ -15,33 +17,42 @@ export default (cache: LibCache): LibEventHandler => {
 		async (event: CounterEvent): Promise<void> => {
 			const counterIdsInCache = await cache.get(
 				'numberAndMedian:counterIds'
-			);
-			const counterIds: Set<DomainId> = new Set(
-				counterIdsInCache?.value === undefined
-					? []
-					: JSON.parse(counterIdsInCache.value)
-			);
+			) as Option<string>;
+
+			let counterIds: Set<DomainId>;
+			if(counterIdsInCache === none) {
+				counterIds = new Set();
+			} else {
+				const t1 = counterIdsInCache as Some<string>;
+				const t2:string = t1.value;
+				const t3:Array<DomainId> = JSON.parse(t2);
+				counterIds = new Set(t3);
+			}
 			counterIds.add(event.aggregateId);
 
 			const t = countersMap.get(event.aggregateId);
 			const lastValue = t === undefined ? 0 : t;
-			countersMap.set(event.aggregateId, lastValue + event.payload);
+			countersMap.set(event.aggregateId, lastValue + getOrElse(() => 0)(event.payload));
 
 			let total = 0;
 			countersMap.forEach((value) => {
 				total += value;
 			});
-
 			const median = total / counterIds.size;
 
+			console.log({counterIds: JSON.stringify(Array.from(counterIds)), 'counterIds.size': counterIds.size, total, median });
+
 			await cache.set('numberAndMedian:counterIds', {
-				value: JSON.stringify(Array.from(counterIds)),
+				value: some(JSON.stringify(Array.from(counterIds))),
+				version: none,
 			});
 			await cache.set('numberAndMedian:number', {
-				value: counterIds.size,
+				value: some(counterIds.size),
+				version: none,
 			});
 			await cache.set('numberAndMedian:median', {
-				value: median,
+				value: some(median),
+				version: none,
 			});
 		},
 		{

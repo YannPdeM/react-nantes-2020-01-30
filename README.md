@@ -1,6 +1,15 @@
 Mercredi :-(
 1. Razzle
 
+any -> Option<unknown>
+
+/counter -> appli -> redirection à /counter/uuid
+/chrono -> démo
+
+
+
+Conflit d’UUID
+
 Plus tard :
 1. simplifier un peu la chaîne côté commandHandler/Objet métier/Repository
 2. Avoir une meilleure sauvegarde sur disque (fichier en écriture seule) au lieu de la sérialisation JSON actuelle

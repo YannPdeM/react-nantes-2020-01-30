@@ -1,9 +1,10 @@
 import numberAndMedianProjector from './numberAndMedianProjector';
-import inMemoryCache from '../../../../../lib/infrastructure/InMemory/Cache/InMemoryCache';
+import inMemoryCache from '../../../../../DDD_ES_Lib/infrastructure/InMemory/Cache/InMemoryCache';
 import {
 	CounterEventsNames,
 	createCounterEvent,
 } from '../../../../common/domain/counter/events/CounterEvents';
+import { None, Some } from 'fp-ts/lib/Option';
 
 describe('numberAndMedianProjector', () => {
 	const firstCounterId = 'FIRST_COUNTER_ID';
@@ -34,11 +35,14 @@ describe('numberAndMedianProjector', () => {
 		aNamp = numberAndMedianProjector(aCache);
 	});
 
-	it('stores the number of counters', async () => {
+	fit('stores the number of counters', async () => {
 		await aNamp(firstAddedEvent);
-		expect(
-			parseInt((await aCache.get(`numberAndMedian:number`)).value, 10)
-		).toBe(1);
+
+		const t1: Some<{version:None, value:Some<number>}> = (await aCache.get(`numberAndMedian:number`));
+		const t2:{version:None, value:Some<number>} = t1.value;
+		const t3:Some<number> = t2.value;
+		const t4:number = t3.value
+		expect(t4).toBe(1);
 
 		await aNamp(secondAddedEvent);
 		expect(

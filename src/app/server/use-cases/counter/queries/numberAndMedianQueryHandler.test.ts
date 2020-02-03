@@ -1,10 +1,11 @@
 import numberAndMedianQueryHandler from './numberAndMedianQueryHandler';
-import InMemoryCache from '../../../../../lib/infrastructure/InMemory/Cache/InMemoryCache';
+import InMemoryCache from '../../../../../DDD_ES_Lib/infrastructure/InMemory/Cache/InMemoryCache';
 import {
 	NumberOfCountersAndMedianOfAllQuery,
 	NumberOfCountersAndMedianOfAllQueryName,
 } from '../../../../common/domain/counter/queries/NumberOfCountersAndMedianOfAllQuery';
 import { NumberOfCountersAndMedianOfAllViewModel } from '../../../../common/domain/counter/viewModels/numberOfCountersAndMedianOfAllViewModel';
+import { none, some } from 'fp-ts/lib/Option';
 
 describe('a numberAndMedianQueryHandler', () => {
 	const aCache = InMemoryCache();
@@ -17,13 +18,15 @@ describe('a numberAndMedianQueryHandler', () => {
 
 	it('fetches the ViewModel from the Cache', async () => {
 		await aCache.set(`numberAndMedian:number`, {
-			value: 2,
+			value: some(2),
+			version: none,
 		});
 		await aCache.set(`numberAndMedian:median`, {
-			value: 0.5,
+			value: some(0.5),
+			version: none,
 		});
 
-		const vm: NumberOfCountersAndMedianOfAllViewModel = await aNamqh(aQuery);
+		const vm = await aNamqh(aQuery) as NumberOfCountersAndMedianOfAllViewModel;
 
 		expect(vm).toEqual({
 			value: {

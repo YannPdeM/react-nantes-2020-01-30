@@ -3,7 +3,7 @@ import {
 	DomainId,
 	LibEventStore,
 	DomainVersion,
-} from '../../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 
 import Counter from '../../../../common/domain/counter/Counter';
 import { CounterEvent } from '../../../../common/domain/counter/events/CounterEvents';

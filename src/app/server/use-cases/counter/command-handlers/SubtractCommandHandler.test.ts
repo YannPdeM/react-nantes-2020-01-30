@@ -4,13 +4,14 @@ import {
 } from '../../../../common/domain/counter/commands/CounterCommands';
 
 import SubtractCommandHandler from './SubtractCommandHandler';
-import InMemoryEventStore from '../../../../../lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
+import InMemoryEventStore from '../../../../../DDD_ES_Lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
 import {
 	createDomainCommand,
 	DomainSuccessfulCommandResponse,
-} from '../../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 import { Right } from 'fp-ts/lib/Either';
 import { CounterEventsNames } from '../../../../common/domain/counter/events/CounterEvents';
+import { none, some } from 'fp-ts/lib/Option';
 
 describe('An SubtractCommandHandler', () => {
 	const AN_AGGREGATE_ID = 'AN_AGGREGATE_ID';
@@ -19,10 +20,10 @@ describe('An SubtractCommandHandler', () => {
 	const sch = SubtractCommandHandler(new InMemoryEventStore());
 	const sc = createDomainCommand({
 		name: CounterCommandNames.Subtract,
-		payload: {
+		payload: some({
 			aggregateId: AN_AGGREGATE_ID,
 			howMuch: SOME_NUMBER,
-		},
+		}),
 	}) as SubtractCommand;
 
 	it('listens to the SubtractCommand', () => {
@@ -42,9 +43,9 @@ describe('An SubtractCommandHandler', () => {
 			aggregateId: AN_AGGREGATE_ID,
 			version: 0,
 			name: CounterEventsNames.Subtracted,
-			payload: SOME_NUMBER,
+			payload: some(SOME_NUMBER),
 			timestamp: expect.any(Number),
-			meta: undefined,
+			meta: none,
 		});
 	});
 });

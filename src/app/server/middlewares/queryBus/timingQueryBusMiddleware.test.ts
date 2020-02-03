@@ -2,7 +2,7 @@ import timingQueryBusMiddleware from './timingQueryBusMiddleware';
 import {
 	DomainQuery,
 	LibQueryBusMiddleware,
-} from '../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 
 describe('a timingQueryBusMiddleware', () => {
 	it('logs the time taken for an Query to be executed', async () => {
@@ -10,14 +10,14 @@ describe('a timingQueryBusMiddleware', () => {
 			name: 'SOME_QUERY_NAME',
 		};
 
-		const aQbm = jest.fn(
+		const aQbm = <jest.MockedFunction<LibQueryBusMiddleware>><unknown>jest.fn(
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			async (query: DomainQuery) => ({
 				value: {
 					something: 'anything',
 				},
 			})
-		) as jest.MockedFunction<LibQueryBusMiddleware>;
+		);
 
 		const aLogger = {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars

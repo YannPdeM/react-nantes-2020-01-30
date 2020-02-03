@@ -2,7 +2,7 @@ import {
 	LibCommandHandler,
 	DomainCommandName,
 	LibEventStore,
-} from '../../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 
 import {
 	CounterCommandNames,

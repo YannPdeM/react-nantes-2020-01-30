@@ -3,7 +3,7 @@ import {
 	createCounterEvent,
 } from '../../../../common/domain/counter/events/CounterEvents';
 
-import InMemoryEventStore from '../../../../../lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
+import InMemoryEventStore from '../../../../../DDD_ES_Lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
 import CounterRepository from './CounterRepository';
 
 import { v4 as uuid } from 'uuid';

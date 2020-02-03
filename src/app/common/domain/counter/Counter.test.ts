@@ -1,4 +1,4 @@
-import { createDomainEvent } from '../../../../lib/DDD_ES/DDD_ES';
+import { createDomainEvent } from '../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 
 import Counter from './Counter';
 import {
@@ -6,6 +6,8 @@ import {
 	CounterEventsNames,
 	createCounterEvent,
 } from './events/CounterEvents';
+
+import { some } from 'fp-ts/lib/Option';
 
 describe('a Counter', () => {
 	it('can add', () => {
@@ -89,12 +91,12 @@ describe('a Counter', () => {
 			aggregateId: counter.id,
 			version: counter.lastVersion + 1,
 			timestamp: Date.now(),
-			payload: 'Whatever',
+			payload: some('Whatever'),
 		}) as CounterEvent;
 		counter.applyEvents([errorEvent]);
 
 		expect(aLogger.log.mock.calls[0][0]).toBe(
-			`${id}@${lastVersion + 1}: ignored event: ${errorEvent.payload}`
+			`${id}@${lastVersion + 1}: ignored event: ${errorEvent.payload.value}`
 		);
 	});
 });

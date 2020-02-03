@@ -1,9 +1,10 @@
-import { LibCache, LibQueryHandler } from '../../../../../lib/DDD_ES/DDD_ES';
+import { LibCache, LibQueryHandler } from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 import {
 	NumberOfCountersAndMedianOfAllQuery,
 	NumberOfCountersAndMedianOfAllQueryName,
 } from '../../../../common/domain/counter/queries/NumberOfCountersAndMedianOfAllQuery';
 import { NumberOfCountersAndMedianOfAllViewModel } from '../../../../common/domain/counter/viewModels/numberOfCountersAndMedianOfAllViewModel';
+import { none, Some, some, toNullable } from 'fp-ts/lib/Option';
 
 export default (cache: LibCache): LibQueryHandler =>
 	Object.assign(
@@ -12,15 +13,19 @@ export default (cache: LibCache): LibQueryHandler =>
 			query: NumberOfCountersAndMedianOfAllQuery
 		): Promise<NumberOfCountersAndMedianOfAllViewModel> => {
 			const numberOfCounters = parseInt(
-				(await cache.get('numberAndMedian:number')).value,
+				<string><unknown>(toNullable(await cache.get('numberAndMedian:number')) as {value: number}).value,
 				10
 			);
-			const medianOfAll = (await cache.get('numberAndMedian:median')).value;
+			const medianOfAll = (toNullable(await cache.get('numberAndMedian:median')) as {value:number}).value;
 			return {
-				value: {
+				version: none,
+				value: <Some<{
+					numberOfCounters: number;
+					medianOfAll: number;
+				}>>some({
 					numberOfCounters,
 					medianOfAll,
-				},
+				})
 			};
 		},
 		{

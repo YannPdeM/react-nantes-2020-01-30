@@ -3,7 +3,7 @@ import {
 	createDomainEvent,
 	LibEventBusMiddleware,
 	DomainEvent,
-} from '../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 
 describe('loggerEventBusMiddleware', () => {
 	it('logs the passed event', async () => {

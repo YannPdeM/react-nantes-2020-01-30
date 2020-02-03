@@ -1,5 +1,6 @@
 import { DomainId, DomainVersion, DomainEvent } from '../../../DDD_ES/DDD_ES';
 import InMemoryEventStore from './InMemoryEventStore';
+import { some, none } from 'fp-ts/lib/Option';
 
 const SomethingHappenedEvent = (
 	aggregateId: DomainId,
@@ -11,9 +12,10 @@ const SomethingHappenedEvent = (
 	aggregateId: aggregateId,
 	version: version,
 	timestamp: Date.now(),
-	payload: {
+	payload: some({
 		whatever: whatever || 'anything',
-	},
+	}),
+	meta: none
 });
 
 describe('an event store', () => {
