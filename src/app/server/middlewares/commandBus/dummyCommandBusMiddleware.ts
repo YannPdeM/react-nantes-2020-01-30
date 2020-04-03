@@ -2,7 +2,7 @@ import {
 	DomainCommand,
 	LibCommandBusMiddleware,
 	DomainCommandResponse,
-} from '../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 
 export default (
 	next: LibCommandBusMiddleware

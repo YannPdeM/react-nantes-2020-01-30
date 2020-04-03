@@ -1,17 +1,15 @@
-import {
-	CounterCommandNames,
-	DivideCommand,
-} from '../../../../common/domain/counter/commands/CounterCommands';
+import { CounterCommandNames } from '../../../../common/domain/counter/commands/CounterCommands';
 
 import DivideCommandHandler from './DivideCommandHandler';
-import InMemoryEventStore from '../../../../../lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
+import InMemoryEventStore from '../../../../../DDD_ES_Lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
 import {
 	createDomainCommand,
 	DomainSuccessfulCommandResponse,
-} from '../../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 import { Right } from 'fp-ts/lib/Either';
 import { CounterEventsNames } from '../../../../common/domain/counter/events/CounterEvents';
 import { either } from 'fp-ts';
+import { none, some } from 'fp-ts/lib/Option';
 
 describe('An DivideCommandHandler', () => {
 	const AN_AGGREGATE_ID = 'AN_AGGREGATE_ID';
@@ -20,11 +18,11 @@ describe('An DivideCommandHandler', () => {
 	const dch = DivideCommandHandler(new InMemoryEventStore());
 	const dc = createDomainCommand({
 		name: CounterCommandNames.Divide,
-		payload: {
+		payload: some({
 			aggregateId: AN_AGGREGATE_ID,
 			howMuch: SOME_NUMBER,
-		},
-	}) as DivideCommand;
+		}),
+	});
 
 	it('listens to the DivideCommand', () => {
 		expect(dch.listenTo()).toBe(dc.name);
@@ -43,20 +41,20 @@ describe('An DivideCommandHandler', () => {
 			aggregateId: AN_AGGREGATE_ID,
 			version: 0,
 			name: CounterEventsNames.Divided,
-			payload: SOME_NUMBER,
+			payload: some(SOME_NUMBER),
 			timestamp: expect.any(Number),
-			meta: undefined,
+			meta: none,
 		});
 	});
 
 	it('we can’t divide by 0', async () => {
 		const aFailingDivideCommand = createDomainCommand({
 			name: CounterCommandNames.Divide,
-			payload: {
+			payload: some({
 				aggregateId: AN_AGGREGATE_ID,
 				howMuch: 0,
-			},
-		}) as DivideCommand;
+			}),
+		});
 
 		const result = await dch(aFailingDivideCommand);
 

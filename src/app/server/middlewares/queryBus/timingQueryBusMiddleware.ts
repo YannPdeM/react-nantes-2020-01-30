@@ -1,10 +1,10 @@
-import { Logger } from '../../../../lib/utils/Logger';
+import { Logger } from '../../../../DDD_ES_Lib/utils/Logger';
 import {
 	DomainQuery,
 	DomainViewModel,
 	LibQueryBusMiddleware,
 	LibQueryBusMiddlewareFactory,
-} from '../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 
 export default (logger: Logger): LibQueryBusMiddlewareFactory => (
 	next: LibQueryBusMiddleware

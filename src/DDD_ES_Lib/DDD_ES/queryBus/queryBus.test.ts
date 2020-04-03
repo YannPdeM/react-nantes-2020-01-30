@@ -3,6 +3,7 @@ import queryBus from './queryBus';
 import { DomainQuery, DomainViewModel, LibQueryHandler } from '../DDD_ES';
 import timingQueryBusMiddleware from '../../../app/server/middlewares/queryBus/timingQueryBusMiddleware';
 import loggerQueryBusMiddleware from '../../../app/server/middlewares/queryBus/loggerQueryBusMiddleware';
+import { none, some } from 'fp-ts/lib/Option';
 
 describe('a QueryBus', () => {
 	const aQuery: DomainQuery = {
@@ -12,7 +13,8 @@ describe('a QueryBus', () => {
 	const t = jest.fn(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		async (query: DomainQuery): Promise<DomainViewModel> => ({
-			value: {},
+			value: some({}),
+			version: none,
 		})
 	);
 	const dummyQueryHandler: LibQueryHandler = Object.assign(t, {

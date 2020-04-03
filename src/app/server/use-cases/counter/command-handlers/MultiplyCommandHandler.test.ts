@@ -4,13 +4,14 @@ import {
 } from '../../../../common/domain/counter/commands/CounterCommands';
 
 import MultiplyCommandHandler from './MultiplyCommandHandler';
-import InMemoryEventStore from '../../../../../lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
+import InMemoryEventStore from '../../../../../DDD_ES_Lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
 import {
 	createDomainCommand,
 	DomainSuccessfulCommandResponse,
-} from '../../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 import { Right } from 'fp-ts/lib/Either';
 import { CounterEventsNames } from '../../../../common/domain/counter/events/CounterEvents';
+import { none, some } from 'fp-ts/lib/Option';
 
 describe('An MultiplyCommandHandler', () => {
 	const AN_AGGREGATE_ID = 'AN_AGGREGATE_ID';
@@ -19,10 +20,10 @@ describe('An MultiplyCommandHandler', () => {
 	const mch = MultiplyCommandHandler(new InMemoryEventStore());
 	const mc = createDomainCommand({
 		name: CounterCommandNames.Multiply,
-		payload: {
+		payload: some({
 			aggregateId: AN_AGGREGATE_ID,
 			howMuch: SOME_NUMBER,
-		},
+		}),
 	}) as MultiplyCommand;
 
 	it('listens to the MultiplyCommand', () => {
@@ -42,9 +43,9 @@ describe('An MultiplyCommandHandler', () => {
 			aggregateId: AN_AGGREGATE_ID,
 			version: 0,
 			name: CounterEventsNames.Multiplied,
-			payload: SOME_NUMBER,
+			payload: some(SOME_NUMBER),
 			timestamp: expect.any(Number),
-			meta: undefined,
+			meta: none,
 		});
 	});
 });

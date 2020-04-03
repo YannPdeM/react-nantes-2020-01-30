@@ -3,9 +3,10 @@ import {
 	DomainId,
 	DomainVersion,
 	DomainTimestamp,
-} from '../../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 
 import { v4 as uuid } from 'uuid';
+import { none, some, Option, Some } from 'fp-ts/lib/Option';
 
 export enum CounterEventsNames {
 	Added = 'Counter:Event:Added',
@@ -14,12 +15,10 @@ export enum CounterEventsNames {
 	Divided = 'Counter:Event:Divided',
 }
 
-// We could use a functional type for errors here
 export interface CounterEvent extends DomainEvent {
 	name: CounterEventsNames;
-	payload: number;
+	payload: Some<number>;
 }
-
 export const createCounterEvent = ({
 	eventId = uuid(),
 	name,
@@ -27,7 +26,7 @@ export const createCounterEvent = ({
 	version,
 	timestamp = Date.now(),
 	payload,
-	meta,
+	meta = none,
 }: {
 	eventId?: DomainId;
 	name: CounterEventsNames;
@@ -35,14 +34,13 @@ export const createCounterEvent = ({
 	version: DomainVersion;
 	timestamp?: DomainTimestamp;
 	payload: number;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	meta?: any;
+	meta?: Option<unknown>;
 }): CounterEvent => ({
 	eventId,
 	name,
 	aggregateId,
 	version,
 	timestamp,
-	payload,
+	payload: some(payload) as Some<number>,
 	meta,
 });

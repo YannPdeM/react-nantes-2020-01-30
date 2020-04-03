@@ -3,8 +3,8 @@ import {
 	LibCommandBusMiddleware,
 	LibCommandBusMiddlewareFactory,
 	DomainCommandResponse,
-} from '../../../../lib/DDD_ES/DDD_ES';
-import { Logger } from '../../../../lib/utils/Logger';
+} from '../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
+import { Logger } from '../../../../DDD_ES_Lib/utils/Logger';
 
 export default (logger: Logger): LibCommandBusMiddlewareFactory => (
 	next: LibCommandBusMiddleware

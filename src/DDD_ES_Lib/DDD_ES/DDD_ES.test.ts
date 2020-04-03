@@ -3,8 +3,10 @@ import {
 	createDomainEvent,
 	DomainCommand,
 	createDomainCommand,
+	CommandMeta,
 } from './DDD_ES';
 import { v4 as uuid } from 'uuid';
+import { none, Some, some } from 'fp-ts/lib/Option';
 
 describe(' createDomainEvent', () => {
 	const eventData: DomainEvent = {
@@ -13,12 +15,12 @@ describe(' createDomainEvent', () => {
 		aggregateId: 'AN_AGGREGATE_ID',
 		version: 0,
 		timestamp: Date.now(),
-		payload: {
+		payload: some({
 			whatever: 'anything',
-		},
-		meta: {
+		}),
+		meta: some({
 			whateverAgain: 'anything again',
-		},
+		}),
 	};
 
 	it('generates a new Event when called properly', () => {
@@ -39,20 +41,20 @@ describe(' createDomainEvent', () => {
 		});
 		expect(event.timestamp).toBeGreaterThanOrEqual(beforeCreation);
 		expect(event.timestamp).toBeLessThanOrEqual(afterCreation);
-		expect(event.payload).toBeUndefined();
-		expect(event.meta).toBeUndefined();
+		expect(event.payload).toBe(none);
+		expect(event.meta).toBe(none);
 	});
 });
 
 describe('createDomainCommand', () => {
 	const commandData: DomainCommand = {
 		name: 'A_USER_INTENTION',
-		payload: {
+		payload: some({
 			whatever: 'anything',
-		},
-		meta: {
+		}),
+		meta: some({
 			timestamp: Date.now(),
-		},
+		}),
 	};
 
 	it('generates a new DomainCommand when called properly', () => {
@@ -68,14 +70,17 @@ describe('createDomainCommand', () => {
 		expect(command).toMatchObject({
 			name,
 			meta: {
-				timestamp: expect.any(Number),
+				_tag: 'Some',
+				value: {
+					timestamp: expect.any(Number),
+				},
 			},
 		});
-		const {
-			meta: { timestamp },
-		} = command;
+		const { meta } = command;
+		const { value } = meta as Some<CommandMeta>;
+		const { timestamp } = value;
 		expect(timestamp).toBeGreaterThanOrEqual(beforeCreation);
 		expect(timestamp).toBeLessThanOrEqual(afterCreation);
-		expect(command.payload).toBeUndefined();
+		expect(command.payload).toBe(none);
 	});
 });

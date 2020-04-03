@@ -1,21 +1,60 @@
-import { LibCache, LibEventHandler } from '../../../../../lib/DDD_ES/DDD_ES';
+import {
+	DomainId,
+	DomainVersion,
+	LibCache,
+	LibEventHandler,
+} from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
 import {
 	CounterEvent,
 	CounterEventsNames,
 } from '../../../../common/domain/counter/events/CounterEvents';
+import { none, Option, Some, some } from 'fp-ts/lib/Option';
+import { SingleCounterViewModel } from '../../../../common/domain/counter/viewModels/singleCounterViewModel';
 
 export default (cache: LibCache): LibEventHandler =>
 	Object.assign(
 		async (event: CounterEvent): Promise<void> => {
-			const { aggregateId, version, payload } = event;
+			const key = `${event.aggregateId}:lastValue`;
+			const inCache = (await cache.get(key)) as Option<
+				SingleCounterViewModel
+			>;
 
-			const key = `${aggregateId}:lastValue`;
+			let version: Option<DomainVersion>;
+			let value: Some<number>;
 
-			const inCache = await cache.get(key);
+			if (inCache === none) {
+				version = some(event.version);
+				value = event.payload;
+			} else {
+				const ic: Some<SingleCounterViewModel> = inCache as Some<
+					SingleCounterViewModel
+				>;
+				const icValue: SingleCounterViewModel = ic.value;
+				const previousVersion: Some<DomainVersion> = icValue.version;
+				const previousVersionNumber: number = previousVersion.value;
+				const previousValue: Some<{ id: DomainId; value: Some<number> }> =
+					icValue.value;
+				const previousValueValue: { id: DomainId; value: Some<number> } =
+					previousValue.value;
+				const previousValueValueValue: Some<number> =
+					previousValueValue.value;
+				const previousNumber: number = previousValueValueValue.value;
 
-			if (inCache === undefined || inCache.version === version - 1) {
-				const value = (inCache === undefined ? 0 : inCache.value) + payload;
-				await cache.set(key, { version, value });
+				if (previousVersionNumber === event.version - 1) {
+					version = some(event.version);
+					const eventValue = event.payload;
+					value = some(eventValue.value + previousNumber) as Some<number>;
+				}
+			}
+
+			if (version !== undefined && value !== undefined) {
+				await cache.set(key, {
+					version: some(event.version),
+					value: some({
+						id: event.aggregateId,
+						value,
+					}),
+				});
 			}
 		},
 		{

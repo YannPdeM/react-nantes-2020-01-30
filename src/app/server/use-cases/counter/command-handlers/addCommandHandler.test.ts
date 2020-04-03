@@ -1,16 +1,19 @@
+import { Right } from 'fp-ts/lib/Either';
+import { none, some } from 'fp-ts/lib/Option';
+
+import {
+	createDomainCommand,
+	DomainSuccessfulCommandResponse,
+} from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
+import InMemoryEventStore from '../../../../../DDD_ES_Lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
+
+import { CounterEventsNames } from '../../../../common/domain/counter/events/CounterEvents';
 import {
 	CounterCommandNames,
 	AddCommand,
 } from '../../../../common/domain/counter/commands/CounterCommands';
 
 import addCommandHandler from './addCommandHandler';
-import InMemoryEventStore from '../../../../../lib/infrastructure/InMemory/EventStore/InMemoryEventStore';
-import {
-	createDomainCommand,
-	DomainSuccessfulCommandResponse,
-} from '../../../../../lib/DDD_ES/DDD_ES';
-import { Right } from 'fp-ts/lib/Either';
-import { CounterEventsNames } from '../../../../common/domain/counter/events/CounterEvents';
 
 describe('An AddCommandHandler', () => {
 	const AN_AGGREGATE_ID = 'AN_AGGREGATE_ID';
@@ -19,10 +22,10 @@ describe('An AddCommandHandler', () => {
 	const ach = addCommandHandler(new InMemoryEventStore());
 	const ac = createDomainCommand({
 		name: CounterCommandNames.Add,
-		payload: {
+		payload: some({
 			aggregateId: AN_AGGREGATE_ID,
 			howMuch: SOME_NUMBER,
-		},
+		}),
 	}) as AddCommand;
 
 	it('listens to the AddCommand', () => {
@@ -44,9 +47,9 @@ describe('An AddCommandHandler', () => {
 			aggregateId: AN_AGGREGATE_ID,
 			version: 0,
 			name: CounterEventsNames.Added,
-			payload: SOME_NUMBER,
+			payload: some(SOME_NUMBER),
 			timestamp: expect.any(Number),
-			meta: undefined,
+			meta: none,
 		});
 
 		const { timestamp: ts } = events[0];

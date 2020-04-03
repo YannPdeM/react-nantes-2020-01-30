@@ -2,7 +2,8 @@ import loggerQueryBusMiddleware from './loggerQueryBusMiddleware';
 import {
 	DomainQuery,
 	LibQueryBusMiddleware,
-} from '../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
+import { some } from 'fp-ts/lib/Option';
 
 describe('a loggerQueryBusMiddleware', () => {
 	it('logs the passed query', async () => {
@@ -10,14 +11,17 @@ describe('a loggerQueryBusMiddleware', () => {
 			name: 'SOME_QUERY_NAME',
 		};
 
-		const aQbm = jest.fn(
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			async (query: DomainQuery) => ({
-				value: {
-					something: 'anything',
-				},
-			})
-		) as jest.MockedFunction<LibQueryBusMiddleware>;
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+		const aQbm = <jest.MockedFunction<LibQueryBusMiddleware>>(
+			(<unknown>jest.fn(
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				async (query: DomainQuery) => ({
+					value: some({
+						something: 'anything',
+					}),
+				})
+			))
+		);
 
 		const aLogger = {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars

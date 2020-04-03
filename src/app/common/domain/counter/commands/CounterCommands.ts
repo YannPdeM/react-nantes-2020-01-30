@@ -1,4 +1,8 @@
-import { DomainCommand, DomainId } from '../../../../../lib/DDD_ES/DDD_ES';
+import {
+	DomainCommand,
+	DomainId,
+} from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
+import { Some } from 'fp-ts/lib/Option';
 
 export enum CounterCommandNames {
 	Add = 'Counter:Command:Add',
@@ -8,10 +12,10 @@ export enum CounterCommandNames {
 }
 
 export interface CounterCommand extends DomainCommand {
-	payload: {
+	payload: Some<{
 		aggregateId: DomainId;
 		howMuch: number;
-	};
+	}>;
 }
 export interface AddCommand extends CounterCommand {
 	name: CounterCommandNames.Add;

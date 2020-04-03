@@ -1,5 +1,5 @@
 import numberAndMedianProjector from './numberAndMedianProjector';
-import inMemoryCache from '../../../../../lib/infrastructure/InMemory/Cache/InMemoryCache';
+import inMemoryCache from '../../../../../DDD_ES_Lib/infrastructure/InMemory/Cache/InMemoryCache';
 import {
 	CounterEventsNames,
 	createCounterEvent,
@@ -36,36 +36,31 @@ describe('numberAndMedianProjector', () => {
 
 	it('stores the number of counters', async () => {
 		await aNamp(firstAddedEvent);
-		expect(
-			parseInt((await aCache.get(`numberAndMedian:number`)).value, 10)
-		).toBe(1);
+
+		const t1 = (await aCache.get(`numberAndMedian:number`)).value.value.value;
+		expect(t1).toBe(1);
 
 		await aNamp(secondAddedEvent);
-		expect(
-			parseInt((await aCache.get(`numberAndMedian:number`)).value, 10)
-		).toBe(2);
+		const t2 = (await aCache.get(`numberAndMedian:number`)).value.value.value;
+		expect(t2).toBe(2);
 
 		await aNamp(thirdAddedEvent);
-		expect(
-			parseInt((await aCache.get(`numberAndMedian:number`)).value, 10)
-		).toBe(2);
+		const t3 = (await aCache.get(`numberAndMedian:number`)).value.value.value;
+		expect(t3).toBe(2);
 	});
 
 	it('stores the median of counters', async () => {
 		await aNamp(firstAddedEvent);
-		expect(
-			parseFloat((await aCache.get(`numberAndMedian:median`)).value)
-		).toBe(2);
+		const t1 = (await aCache.get(`numberAndMedian:median`)).value.value.value;
+		expect(t1).toBe(2);
 
 		await aNamp(secondAddedEvent);
-		expect(
-			parseFloat((await aCache.get(`numberAndMedian:median`)).value)
-		).toBe(2.5);
+		const t2 = (await aCache.get(`numberAndMedian:median`)).value.value.value;
+		expect(t2).toBe(2.5);
 
 		await aNamp(thirdAddedEvent);
-		expect(
-			parseFloat((await aCache.get(`numberAndMedian:median`)).value)
-		).toBe(4.5);
+		const t3 = (await aCache.get(`numberAndMedian:median`)).value.value.value;
+		expect(t3).toBe(4.5);
 	});
 
 	it('listens to the specified events (plural, so array)', () => {

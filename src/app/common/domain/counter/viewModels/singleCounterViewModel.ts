@@ -2,12 +2,13 @@ import {
 	DomainId,
 	DomainVersion,
 	DomainVersionedViewModel,
-} from '../../../../../lib/DDD_ES/DDD_ES';
+} from '../../../../../DDD_ES_Lib/DDD_ES/DDD_ES';
+import { Some } from 'fp-ts/lib/Option';
 
 export interface SingleCounterViewModel extends DomainVersionedViewModel {
-	version: DomainVersion;
-	value: {
+	version: Some<DomainVersion>;
+	value: Some<{
 		id: DomainId;
-		value: number;
-	};
+		value: Some<number>;
+	}>;
 }
