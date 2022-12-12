@@ -28,7 +28,7 @@
     "yarn": "^1.19"
   },
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "fp-ts": "^2.4.2",
     "razzle": "^3.0.0",
     "react": "^0.14.0",
